@@ -1,5 +1,17 @@
 import { ChevronDown } from "lucide-react";
 
+const igImages = Array.from({ length: 20 }, (_, i) =>
+  `/images/instagram/ig_${String(i + 1).padStart(2, "0")}.jpg`
+);
+const allImages = [...igImages, ...igImages];
+
+const rotations = [
+  -3, 2, -1.5, 3, -2, 1, -2.5, 3.5, -1, 2.5,
+  -3, 2, -1.5, 3, -2, 1, -2.5, 3.5, -1, 2.5,
+  -3, 2, -1.5, 3, -2, 1, -2.5, 3.5, -1, 2.5,
+  -3, 2, -1.5, 3, -2, 1, -2.5, 3.5, -1, 2.5,
+];
+
 const Hero = () => {
   const handleNav = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
@@ -7,16 +19,25 @@ const Hero = () => {
 
   return (
     <section id="inicio" className="relative min-h-screen bg-negro flex items-center pt-[72px] overflow-hidden">
-      {/* Background decorative logo */}
-      <img
-        src="/images/logo.png"
-        alt=""
-        aria-hidden="true"
-        className="absolute pointer-events-none z-0 opacity-[0.04] w-[260px] md:w-[480px] right-[-60px] bottom-[-20px]"
-        style={{ filter: "invert(1)" }}
-      />
+      {/* Hooks conveyor background */}
+      <div className="hooks-wrapper">
+        <div className="hooks-track">
+          {allImages.map((src, i) => (
+            <div
+              key={i}
+              className="hook-item"
+              style={{ transform: `rotate(${rotations[i]}deg)` }}
+            >
+              <div className="hook-line" />
+              <div className="hook-curve" />
+              <img src={src} alt="" draggable={false} />
+            </div>
+          ))}
+        </div>
+      </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-6 w-full py-16 md:py-0">
+      {/* Hero content */}
+      <div className="relative z-[2] max-w-7xl mx-auto px-4 lg:px-6 w-full py-16 md:py-0">
         <div className="max-w-[680px]">
           {/* Label */}
           <div className="flex items-center gap-4 mb-8">
