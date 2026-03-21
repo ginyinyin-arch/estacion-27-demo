@@ -61,7 +61,7 @@ const Gallery = () => {
                 loading="lazy"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-negro/50 opacity-0 group-hover:opacity-100 transition-opacity duration-[280ms]">
-                <img src="/images/logo.png" alt="" className="h-10 opacity-85" style={{ filter: "invert(1)" }} />
+                <img src="/images/logo.png" alt="" className="h-10 opacity-85 -mt-4" style={{ filter: "invert(1)" }} />
               </div>
             </div>
           ))}
