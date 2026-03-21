@@ -121,3 +121,73 @@
     box-shadow: 0 0 0 2px rgba(200,134,10,0.15);
   }
 }
+
+/* ── Hooks conveyor (Hero background) ── */
+.hooks-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.hooks-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 12, 8, 0.75);
+  z-index: 1;
+}
+.hooks-track {
+  display: flex;
+  align-items: flex-start;
+  width: max-content;
+  padding-top: 0;
+  animation: conveyor 55s linear infinite;
+}
+@keyframes conveyor {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.hook-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+  transform-origin: top center;
+}
+.hook-line {
+  width: 1px;
+  height: 52px;
+  background: linear-gradient(to bottom, rgba(200,134,10,0.55), rgba(200,134,10,0.15));
+  flex-shrink: 0;
+}
+.hook-curve {
+  width: 10px;
+  height: 8px;
+  border: 1px solid rgba(200,134,10,0.40);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  margin-bottom: 2px;
+}
+.hook-item img {
+  width: 160px;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 3px;
+  opacity: 0.22;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.70), 0 2px 8px rgba(0,0,0,0.50);
+  display: block;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .hook-line { height: 36px; }
+  .hook-item img { width: 100px; height: 130px; }
+  .hook-item { margin: 0 12px; }
+  .hooks-track { animation-duration: 40s; }
+}
+@media (max-width: 480px) {
+  .hook-item img { width: 80px; height: 104px; opacity: 0.18; }
+  .hook-item { margin: 0 8px; }
+}
