@@ -125,29 +125,36 @@
 /* ── Hooks conveyor (Hero background) ── */
 .hooks-wrapper {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
 }
+
 .hooks-wrapper::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(14, 12, 8, 0.45);
+  background: rgba(14, 12, 8, 0.60);
   z-index: 1;
 }
+
 .hooks-track {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   width: max-content;
-  padding-top: 0;
   animation: conveyor 55s linear infinite;
 }
+
 @keyframes conveyor {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
 .hook-item {
   display: flex;
   flex-direction: column;
@@ -155,30 +162,40 @@
   margin: 0 20px;
   transform-origin: top center;
 }
+
 .hook-line {
   width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, rgba(200,134,10,0.70), rgba(200,134,10,0.20));
+  height: 52px;
   flex-shrink: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(200, 134, 10, 0.70),
+    rgba(200, 134, 10, 0.15)
+  );
 }
+
 .hook-curve {
   width: 12px;
   height: 10px;
-  border: 1.5px solid rgba(200,134,10,0.55);
+  flex-shrink: 0;
+  border: 1.5px solid rgba(200, 134, 10, 0.55);
   border-top: none;
   border-radius: 0 0 10px 10px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
+
 .hook-item img {
   width: 160px;
   height: 200px;
   object-fit: cover;
   object-position: center;
   border-radius: 3px;
-  opacity: 0.55;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.70), 0 2px 8px rgba(0,0,0,0.50);
+  opacity: 0.65;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.70),
+              0 2px 8px rgba(0,0,0,0.50);
   display: block;
   user-select: none;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
@@ -187,7 +204,8 @@
   .hook-item { margin: 0 12px; }
   .hooks-track { animation-duration: 40s; }
 }
+
 @media (max-width: 480px) {
-  .hook-item img { width: 80px; height: 104px; opacity: 0.45; }
+  .hook-item img { width: 80px; height: 104px; opacity: 0.50; }
   .hook-item { margin: 0 8px; }
 }
