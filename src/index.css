@@ -134,7 +134,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(14, 12, 8, 0.75);
+  background: rgba(14, 12, 8, 0.45);
   z-index: 1;
 }
 .hooks-track {
