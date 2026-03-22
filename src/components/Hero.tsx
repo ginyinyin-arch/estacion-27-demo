@@ -30,7 +30,9 @@ const Hero = () => {
             >
               <div className="hook-line" />
               <div className="hook-curve" />
-              <img src={src} alt="" draggable={false} />
+              <div className="photo-wrapper">
+                <img src={src} alt="" draggable={false} />
+              </div>
             </div>
           ))}
         </div>
