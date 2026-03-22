@@ -29,8 +29,12 @@ const Hero = () => {
               style={{ transform: `rotate(${rotations[i]}deg)` }}
             >
               <div className="hook-line" />
-              <div className="hook-curve" />
               <div className="photo-wrapper">
+                <svg className="hook-svg" viewBox="0 0 24 40" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="12" y1="0" x2="12" y2="18" stroke="#C8860A" strokeWidth="2.5" strokeLinecap="round"/>
+                  <path d="M12 18 Q12 30 4 32 Q0 33 0 28" fill="none" stroke="#C8860A" strokeWidth="2.5" strokeLinecap="round"/>
+                </svg>
+                <div className="hook-hole" />
                 <img src={src} alt="" draggable={false} />
               </div>
             </div>
