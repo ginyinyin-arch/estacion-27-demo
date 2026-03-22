@@ -188,6 +188,6 @@
   .hooks-track { animation-duration: 40s; }
 }
 @media (max-width: 480px) {
-  .hook-item img { width: 80px; height: 104px; opacity: 0.18; }
+  .hook-item img { width: 80px; height: 104px; opacity: 0.45; }
   .hook-item { margin: 0 8px; }
 }
