@@ -162,11 +162,11 @@
   flex-shrink: 0;
 }
 .hook-curve {
-  width: 10px;
-  height: 8px;
-  border: 1px solid rgba(200,134,10,0.40);
+  width: 12px;
+  height: 10px;
+  border: 1.5px solid rgba(200,134,10,0.55);
   border-top: none;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 10px 10px;
   margin-bottom: 2px;
 }
 .hook-item img {
