@@ -137,6 +137,16 @@
   }
 }
 
+/* ── Ticker seamless ── */
+.ticker-track {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 /* ── Hooks conveyor (Hero background) ── */
 .hooks-wrapper {
   position: absolute;
