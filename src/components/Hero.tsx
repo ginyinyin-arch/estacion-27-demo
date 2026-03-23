@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const igImages = Array.from({ length: 20 }, (_, i) =>
   `/images/instagram/ig_${String(i + 1).padStart(2, "0")}.jpg`
