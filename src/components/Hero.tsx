@@ -69,6 +69,7 @@ const Hero = () => {
             <div
               key={i}
               className="hook-item"
+              data-base-rotation={rotations[i]}
               style={{ transform: `rotate(${rotations[i]}deg)` }}
             >
               <div className="hook-line" />
