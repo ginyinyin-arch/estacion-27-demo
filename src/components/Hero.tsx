@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const igImages = Array.from({ length: 20 }, (_, i) =>
   `/images/instagram/ig_${String(i + 1).padStart(2, "0")}.jpg`
@@ -13,19 +14,62 @@ const rotations = [
 ];
 
 const Hero = () => {
+  const trackRef = useRef<HTMLDivElement>(null);
+
   const handleNav = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const items = track.querySelectorAll<HTMLElement>('.hook-item');
+    const handlers: Array<{ el: HTMLElement; handler: (e: MouseEvent) => void }> = [];
+
+    items.forEach(item => {
+      const baseRotation = parseFloat(item.dataset.baseRotation || '0');
+      const handler = (e: MouseEvent) => {
+        const rect = item.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const direction = e.clientX < centerX ? 1 : -1;
+        const swingAngle = direction * 14;
+
+        const swings = [
+          { deg: baseRotation + swingAngle, delay: 0 },
+          { deg: baseRotation - swingAngle * 0.6, delay: 180 },
+          { deg: baseRotation + swingAngle * 0.35, delay: 360 },
+          { deg: baseRotation - swingAngle * 0.18, delay: 520 },
+          { deg: baseRotation + swingAngle * 0.08, delay: 660 },
+          { deg: baseRotation, delay: 780 },
+        ];
+
+        swings.forEach(({ deg, delay }) => {
+          setTimeout(() => {
+            item.style.transition = `transform ${delay === 0 ? 80 : 160}ms ease-out`;
+            item.style.transform = `rotate(${deg}deg)`;
+          }, delay);
+        });
+      };
+      item.addEventListener('mouseenter', handler);
+      handlers.push({ el: item, handler });
+    });
+
+    return () => {
+      handlers.forEach(({ el, handler }) => el.removeEventListener('mouseenter', handler));
+    };
+  }, []);
 
   return (
     <section id="inicio" className="relative min-h-screen bg-negro flex items-center pt-[72px] overflow-hidden">
       {/* Hooks conveyor background */}
       <div className="hooks-wrapper">
-        <div className="hooks-track">
+        <div className="hooks-track" ref={trackRef}>
           {allImages.map((src, i) => (
             <div
               key={i}
               className="hook-item"
+              data-base-rotation={rotations[i]}
               style={{ transform: `rotate(${rotations[i]}deg)` }}
             >
               <div className="hook-line" />
