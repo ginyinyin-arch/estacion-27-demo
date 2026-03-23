@@ -32,7 +32,7 @@ const About = () => {
           </div>
 
           {/* Stats */}
-          <div className="flex flex-wrap gap-8 mt-10">
+          <div className="flex flex-wrap gap-8 mt-10 items-end">
             {[
               { num: "+30", label: "AÑOS", sub: "EN CÓRDOBA" },
               { num: "3.500+", label: "RESEÑAS", sub: "" },
@@ -45,6 +45,23 @@ const About = () => {
                 </div>
               </div>
             ))}
+
+            {/* Google Maps link */}
+            <a
+              href="https://google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b?sa=X&ved=1t:242&ictx=111"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 ml-2 mb-1 opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 92.3 132.3">
+                <path fill="#1a73e8" d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z"/>
+                <path fill="#ea4335" d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.8-21.8-18.3z"/>
+                <path fill="#4285f4" d="M46.1 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-34.3-5.6-10.8-15.3-19-27-21.1L32.6 34.8c3.3-3.8 8.1-6.3 13.5-6.3z"/>
+                <path fill="#fbbc04" d="M46.1 63.5c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.6-8.3 4.2-11.4L4.6 68.1C11 83.8 25.3 108.5 46.1 132.3c16.8-23.1 28.4-42.7 36.9-60.1L59.6 57.6c-3.3 3.7-8.1 5.9-13.5 5.9z"/>
+                <path fill="#34a853" d="M59.6 57.6c7.7-6.1 12.7-15.3 12.7-25.5 0-3-0.4-5.8-1.2-8.5L32.6 34.8c-2.6 3.1-4.2 7.1-4.2 11.4 0 9.8 7.9 17.7 17.7 17.7 5.4 0 10.2-2.2 13.5-6.3z"/>
+              </svg>
+              <span className="font-body text-[0.65rem] text-crema2/50">by Google</span>
+            </a>
           </div>
         </div>
 
