@@ -120,13 +120,15 @@ const MenuSection = () => {
           ) : (
             <>
               {data?.image && (
-                <div className="relative rounded overflow-hidden mb-8 h-[320px] bg-negro" style={{ padding: "16px 0" }}>
-                  <img src={data.image} alt="" className="w-full h-full object-contain" />
-                  <div className="absolute inset-0 bg-negro/20 pointer-events-none" />
+                <div className="mb-8">
+                  <div className="relative w-full h-[280px] md:h-[360px] rounded overflow-hidden">
+                    <img src={data.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-negro/70 via-negro/20 to-transparent pointer-events-none" />
+                  </div>
                   {active === "lomos" && (
-                    <span className="absolute bottom-4 left-4 font-display font-semibold italic text-crema bg-negro/55 px-4 py-2 text-sm">
+                    <p className="text-center font-display font-semibold italic text-crema/80 text-sm mt-3">
                       EL LOMO ESTACIÓN — Nuestra especialidad.
-                    </span>
+                    </p>
                   )}
                 </div>
               )}
