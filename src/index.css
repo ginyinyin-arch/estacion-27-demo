@@ -144,7 +144,7 @@
   flex-direction: row;
   align-items: flex-start;
   width: max-content;
-  padding-top: 20px;
+  padding-top: 0px;
   animation: conveyor 55s linear infinite;
 }
 
