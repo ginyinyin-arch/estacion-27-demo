@@ -120,6 +120,21 @@
     border-color: hsl(var(--ambar));
     box-shadow: 0 0 0 2px rgba(200,134,10,0.15);
   }
+  input[type="date"].form-input,
+  input[type="time"].form-input {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="date"].form-input::-webkit-calendar-picker-indicator,
+  input[type="time"].form-input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
 }
 
 /* ── Hooks conveyor (Hero background) ── */
