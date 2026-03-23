@@ -36,8 +36,8 @@ const Reservations = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <Field label="NOMBRE"><input type="text" required className="form-input" placeholder="Tu nombre" /></Field>
-                <Field label="FECHA"><input type="date" required className="form-input" /></Field>
-                <Field label="HORA"><input type="time" required className="form-input" /></Field>
+                <Field label="FECHA"><input type="date" required className="form-input relative" /></Field>
+                <Field label="HORA"><input type="time" required className="form-input relative" /></Field>
                 <Field label="PERSONAS">
                   <select required className="form-input">
                     <option value="">Elegir</option>
