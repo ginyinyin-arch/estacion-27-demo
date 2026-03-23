@@ -144,7 +144,7 @@
   flex-direction: row;
   align-items: flex-start;
   width: max-content;
-  padding-top: 0px;
+  padding-top: 20px;
   animation: conveyor 55s linear infinite;
 }
 
@@ -159,19 +159,16 @@
   align-items: center;
   margin: 0 20px;
   transform-origin: top center;
-  pointer-events: all;
 }
 
 .hook-line {
   width: 3px;
-  height: 120px;
+  height: 48px;
   flex-shrink: 0;
-  margin-top: -72px;
   background: linear-gradient(
     to bottom,
-    rgba(200,134,10,0.00) 0%,
-    rgba(200,134,10,0.95) 40%,
-    rgba(180,120,8,0.70) 100%
+    rgba(200,134,10,0.95),
+    rgba(180,120,8,0.60)
   );
   border-radius: 2px;
 }
