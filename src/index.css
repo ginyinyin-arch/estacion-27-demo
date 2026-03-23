@@ -159,6 +159,7 @@
   align-items: center;
   margin: 0 20px;
   transform-origin: top center;
+  pointer-events: all;
 }
 
 .hook-line {
