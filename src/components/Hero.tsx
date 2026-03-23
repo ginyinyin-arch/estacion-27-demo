@@ -64,7 +64,7 @@ const Hero = () => {
     <section id="inicio" className="relative min-h-screen bg-negro flex items-center pt-[72px] overflow-hidden">
       {/* Hooks conveyor background */}
       <div className="hooks-wrapper">
-        <div className="hooks-track">
+        <div className="hooks-track" ref={trackRef}>
           {allImages.map((src, i) => (
             <div
               key={i}
