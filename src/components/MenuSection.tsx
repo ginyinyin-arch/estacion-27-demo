@@ -154,7 +154,7 @@ const MenuSection = () => {
                     }}
                   >
                     <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className={`font-display font-semibold text-[1.05rem] text-crema ${!d.disponible ? "line-through" : ""}`}>
                           {d.nombre}
                         </span>
@@ -163,7 +163,12 @@ const MenuSection = () => {
                             No disponible
                           </span>
                         )}
-                        {d.nombre.includes("★") && d.disponible && (
+                        {promo && promo.plato_id === d.id && d.disponible && (
+                          <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-negro bg-ambar px-1.5 py-0.5 rounded-sm">
+                            OFERTA {promo.tipo_descuento === "porcentaje" ? `-${promo.valor_descuento}%` : `-$${promo.valor_descuento}`}
+                          </span>
+                        )}
+                        {d.nombre.includes("★") && d.disponible && !promo?.plato_id?.includes(d.id) && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-ambar border border-ambar px-1.5 py-0.5 rounded-sm">
                             ESPECIALIDAD
                           </span>
@@ -176,9 +181,25 @@ const MenuSection = () => {
                       )}
                     </div>
                     {d.precio > 0 && (
-                      <span className="font-body font-medium text-[0.92rem] text-ambar whitespace-nowrap">
-                        ${d.precio.toLocaleString()}
-                      </span>
+                      <div className="text-right whitespace-nowrap">
+                        {promo && promo.plato_id === d.id ? (
+                          <>
+                            <span className="font-body text-[0.78rem] text-gris line-through block">
+                              ${d.precio.toLocaleString()}
+                            </span>
+                            <span className="font-body font-bold text-[1.05rem] text-ambar">
+                              ${(promo.tipo_descuento === "porcentaje"
+                                ? Math.round(d.precio * (1 - promo.valor_descuento / 100))
+                                : Math.max(0, d.precio - promo.valor_descuento)
+                              ).toLocaleString()}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="font-body font-medium text-[0.92rem] text-ambar">
+                            ${d.precio.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}
