@@ -49,6 +49,24 @@ export type Database = {
           },
         ]
       }
+      configuracion: {
+        Row: {
+          id: string
+          updated_at: string
+          whatsapp_numero: string
+        }
+        Insert: {
+          id?: string
+          updated_at?: string
+          whatsapp_numero?: string
+        }
+        Update: {
+          id?: string
+          updated_at?: string
+          whatsapp_numero?: string
+        }
+        Relationships: []
+      }
       estado_local: {
         Row: {
           abierto: boolean
