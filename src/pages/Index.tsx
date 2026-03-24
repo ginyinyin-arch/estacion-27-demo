@@ -10,6 +10,9 @@ import Reservations from "@/components/Reservations";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ClosedBanner from "@/components/ClosedBanner";
+import PromoBanner from "@/components/PromoBanner";
+import DailyMenu from "@/components/DailyMenu";
+import EventsSection from "@/components/EventsSection";
 
 const Index = () => {
   useEffect(() => {
