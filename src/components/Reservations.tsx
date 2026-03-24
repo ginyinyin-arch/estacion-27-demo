@@ -60,6 +60,8 @@ const Reservations = () => {
 
     const personasNum = personas === "9+" ? 9 : parseInt(personas);
     const eventoSeleccionado = eventoId ? eventos.find(ev => ev.id === eventoId) : null;
+    const selectedCountry = countries.find(c => c.code === countryCode)!;
+    const telefono = selectedCountry.prefix.replace("+", "") + phoneNumber;
 
     const { error } = await supabase.from("reservas").insert({
       nombre,
