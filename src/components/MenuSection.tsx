@@ -46,19 +46,28 @@ const categorias = ["Lomos", "Hamburguesas", "Tex Mex", "Ensaladas", "Picadas", 
 const MenuSection = () => {
   const [active, setActive] = useState("Lomos");
   const [platos, setPlatos] = useState<Plato[]>([]);
+  const [promo, setPromo] = useState<Promo | null>(null);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchPlatos = async () => {
       const { data } = await supabase.from("platos").select("*").order("orden", { ascending: true });
       if (data) setPlatos(data);
     };
-    fetch();
+    const fetchPromo = async () => {
+      const { data } = await supabase.from("promociones").select("plato_id, tipo_descuento, valor_descuento, activa, expira_en")
+        .eq("activa", true).limit(1).maybeSingle();
+      if (data && new Date(data.expira_en) > new Date()) setPromo(data);
+      else setPromo(null);
+    };
+    fetchPlatos(); fetchPromo();
 
-    const channel = supabase
-      .channel("platos-public")
-      .on("postgres_changes", { event: "*", schema: "public", table: "platos" }, () => fetch())
+    const ch1 = supabase.channel("platos-public")
+      .on("postgres_changes", { event: "*", schema: "public", table: "platos" }, () => fetchPlatos())
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const ch2 = supabase.channel("promo-menu")
+      .on("postgres_changes", { event: "*", schema: "public", table: "promociones" }, () => fetchPromo())
+      .subscribe();
+    return () => { supabase.removeChannel(ch1); supabase.removeChannel(ch2); };
   }, []);
 
   const activePlatos = platos.filter((p) => p.categoria === active);
