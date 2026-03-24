@@ -53,37 +53,67 @@ const Gallery = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {images.map((src, i) => (
-            <div
-              key={i}
-              className="relative aspect-square overflow-hidden rounded cursor-pointer group"
-              onClick={() => setLightbox(i)}
-            >
-              <img
-                src={src}
-                alt="Plato de Estación 27"
-                className="w-full h-full object-cover transition-transform duration-350 ease-out group-hover:scale-[1.06]"
-                style={{ objectPosition: "center top" }}
-                loading="lazy"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-negro/50 opacity-0 group-hover:opacity-100 transition-opacity duration-[280ms]">
-                <img src="/images/logo.png" alt="" className="h-10 opacity-85 -mt-4" style={{ filter: "invert(1)" }} />
-              </div>
-            </div>
-          ))}
+        {(() => {
+          const visibleImages = isMobile && !expanded ? images.slice(0, 1) : images;
+          const hiddenCount = images.length - 1;
+          return (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {visibleImages.map((src, i) => (
+                  <div
+                    key={i}
+                    className="relative aspect-square overflow-hidden rounded cursor-pointer group"
+                    onClick={() => setLightbox(i)}
+                  >
+                    <img
+                      src={src}
+                      alt="Plato de Estación 27"
+                      className="w-full h-full object-cover transition-transform duration-350 ease-out group-hover:scale-[1.06]"
+                      style={{ objectPosition: "center top" }}
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-negro/50 opacity-0 group-hover:opacity-100 transition-opacity duration-[280ms]">
+                      <img src="/images/logo.png" alt="" className="h-10 opacity-85 -mt-4" style={{ filter: "invert(1)" }} />
+                    </div>
+                  </div>
+                ))}
 
-          {/* 9th cell - Instagram CTA */}
-          <a
-            href="https://www.instagram.com/estacionveintisiete"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="aspect-square rounded bg-madera flex flex-col items-center justify-center gap-3 transition-opacity duration-200 hover:opacity-90"
-          >
-            <img src="/images/logo2.png" alt="" className="h-14 opacity-70" style={{ filter: "invert(1)" }} />
-            <span className="font-display italic text-[0.90rem] text-crema2">@estacionveintisiete</span>
-          </a>
-        </div>
+                {/* Instagram CTA - hidden on mobile when collapsed */}
+                {(!isMobile || expanded) && (
+                  <a
+                    href="https://www.instagram.com/estacionveintisiete"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="aspect-square rounded bg-madera flex flex-col items-center justify-center gap-3 transition-opacity duration-200 hover:opacity-90"
+                  >
+                    <img src="/images/logo2.png" alt="" className="h-14 opacity-70" style={{ filter: "invert(1)" }} />
+                    <span className="font-display italic text-[0.90rem] text-crema2">@estacionveintisiete</span>
+                  </a>
+                )}
+              </div>
+
+              {/* Mobile toggle button */}
+              {isMobile && (
+                <button
+                  onClick={() => {
+                    if (expanded) {
+                      const el = (Gallery as any)._sectionRef;
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }
+                    setExpanded(!expanded);
+                  }}
+                  className="flex items-center justify-center gap-2 w-full mt-4 py-3 font-body text-[0.85rem] text-ambar hover:text-crema transition-colors"
+                >
+                  {expanded ? (
+                    <><ChevronUp size={18} /> Ver menos</>
+                  ) : (
+                    <><ChevronDown size={18} /> Ver más fotos ({hiddenCount})</>
+                  )}
+                </button>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Lightbox */}
