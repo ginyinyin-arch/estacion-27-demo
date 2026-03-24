@@ -14,6 +14,14 @@ interface Plato {
   orden: number;
 }
 
+interface Promo {
+  plato_id: string;
+  tipo_descuento: string;
+  valor_descuento: number;
+  activa: boolean;
+  expira_en: string;
+}
+
 const categoryMap: Record<string, string> = {
   "Lomos": "LOMOS",
   "Hamburguesas": "HAMBURGUESAS",
