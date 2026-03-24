@@ -1,42 +1,32 @@
+import { useLang } from "@/contexts/LangContext";
+
 const About = () => {
+  const { t } = useLang();
+
   return (
     <section id="nosotros" className="bg-negro py-24 px-4 lg:px-6">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[55%_45%] gap-16 items-center">
-        {/* Text */}
         <div>
           <div className="flex items-center gap-4 mb-4">
             <span className="w-12 h-px bg-ambar" />
-            <span className="label-amber">NUESTRA HISTORIA</span>
+            <span className="label-amber">{t("about.label")}</span>
             <span className="w-12 h-px bg-ambar" />
           </div>
           <h2 className="font-display font-extrabold text-crema leading-tight mb-8" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)" }}>
-            Desde 1991, en el corazón de Córdoba.
+            {t("about.title")}
           </h2>
 
           <div className="space-y-5 font-body font-light text-base text-crema2 leading-[1.82]">
-            <p>
-              Estación 27 abrió sus puertas en 1991 en pleno Centro de Córdoba.
-              Más de treinta años después, seguimos siendo el mismo lugar de siempre:
-              una cocina honesta, ingredientes frescos y atención de verdad.
-            </p>
-            <p>
-              El nombre Estación habla de encuentro, de paso, de gente que viene
-              y vuelve. Generaciones de cordobeses pasaron por estas mesas.
-              Estudiantes, familias, enamorados, amigos de toda la vida.
-            </p>
-            <p>
-              Hoy somos cocina de autor sin pretensiones. Nuestros lomitos son
-              legendarios en la ciudad. Pero también hacemos parrilla, pizzas,
-              Tex Mex, ensaladas de autor y un bar que sabe lo que hace.
-            </p>
+            <p>{t("about.p1")}</p>
+            <p>{t("about.p2")}</p>
+            <p>{t("about.p3")}</p>
           </div>
 
-          {/* Stats */}
           <div className="flex flex-wrap gap-8 mt-10 items-end">
             {[
-              { num: "+30", label: "AÑOS", sub: "EN CÓRDOBA" },
-              { num: "3.500+", label: "RESEÑAS", sub: "" },
-              { num: "4.4★", label: "VALORACIÓN", sub: "" },
+              { num: "+30", label: t("about.stat.years"), sub: t("about.stat.years.sub") },
+              { num: "3.500+", label: t("about.stat.reviews"), sub: "" },
+              { num: "4.4★", label: t("about.stat.rating"), sub: "" },
             ].map((s, i) => (
               <div key={i}>
                 <div className="font-display font-extrabold text-[2.8rem] text-ambar leading-none">{s.num}</div>
@@ -46,13 +36,8 @@ const About = () => {
               </div>
             ))}
 
-            {/* Google Maps link */}
-            <a
-              href="https://google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b?sa=X&ved=1t:242&ictx=111"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 ml-2 mb-1 opacity-70 hover:opacity-100 transition-opacity"
-            >
+            <a href="https://google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b?sa=X&ved=1t:242&ictx=111"
+              target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 ml-2 mb-1 opacity-70 hover:opacity-100 transition-opacity">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 92.3 132.3">
                 <path fill="#1a73e8" d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z"/>
                 <path fill="#ea4335" d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.8-21.8-18.3z"/>
@@ -65,17 +50,9 @@ const About = () => {
           </div>
         </div>
 
-        {/* Visual */}
         <div className="flex flex-col items-center">
-          <img
-            src="/images/logo2.png"
-            alt="Estación 27"
-            className="max-w-[320px] w-full"
-            style={{ filter: "invert(1)", opacity: 0.88 }}
-          />
-          <p className="font-display italic text-[1.1rem] text-crema2 mt-6 text-center">
-            Un clásico que no pasa de moda.
-          </p>
+          <img src="/images/logo2.png" alt="Estación 27" className="max-w-[320px] w-full" style={{ filter: "invert(1)", opacity: 0.88 }} />
+          <p className="font-display italic text-[1.1rem] text-crema2 mt-6 text-center">{t("about.quote")}</p>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLang } from "@/contexts/LangContext";
 
 interface EstadoLocal {
   abierto: boolean;
@@ -9,6 +10,7 @@ interface EstadoLocal {
 
 const ClosedBanner = () => {
   const [estado, setEstado] = useState<EstadoLocal | null>(null);
+  const { t } = useLang();
 
   useEffect(() => {
     const fetch = async () => {
@@ -16,9 +18,7 @@ const ClosedBanner = () => {
       if (data) setEstado(data);
     };
     fetch();
-
-    const channel = supabase
-      .channel("estado-public")
+    const channel = supabase.channel("estado-public")
       .on("postgres_changes", { event: "*", schema: "public", table: "estado_local" }, () => fetch())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -29,13 +29,13 @@ const ClosedBanner = () => {
   const { motivo_cierre, fecha_vuelta } = estado;
   let message = "";
   if (motivo_cierre && fecha_vuelta) {
-    message = `Estamos cerrados por ${motivo_cierre}. Volvemos el ${fecha_vuelta}.`;
+    message = `${t("closed.cerrados")} ${t("closed.por")} ${motivo_cierre}. ${t("closed.volvemos")} ${fecha_vuelta}.`;
   } else if (motivo_cierre) {
-    message = `Estamos cerrados por ${motivo_cierre}. Volvemos próximamente.`;
+    message = `${t("closed.cerrados")} ${t("closed.por")} ${motivo_cierre}. ${t("closed.pronto")}.`;
   } else if (fecha_vuelta) {
-    message = `Estamos cerrados. Volvemos el ${fecha_vuelta}.`;
+    message = `${t("closed.cerrados")}. ${t("closed.volvemos")} ${fecha_vuelta}.`;
   } else {
-    message = "Estamos cerrados. Volvemos próximamente.";
+    message = `${t("closed.cerrados")}. ${t("closed.pronto")}.`;
   }
 
   return (
