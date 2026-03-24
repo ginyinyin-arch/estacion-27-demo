@@ -179,7 +179,7 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
     } else {
       const { data: newPlato } = await supabase.from("platos").insert({ categoria, nombre, descripcion: descripcion || null, precio: Number(precio), imagen_url, orden: maxOrden || 1 }).select("id").single();
       if (newPlato) {
-        supabase.functions.invoke("auto-translate", { body: { table: "platos", id: newPlato.id, fields: { nombre, descripcion: descripcion || null } } });
+        supabase.functions.invoke("auto-translate", { body: { table: "platos", id: newPlato.id, fields: { descripcion: descripcion || null } } });
       }
       toast.success("Plato agregado");
     }
