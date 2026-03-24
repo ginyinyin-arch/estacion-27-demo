@@ -4,16 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
-} from "@/components/ui/alert-dialog";
 
 interface Plato { id: string; nombre: string; categoria: string; precio: number; }
 interface Promo {
   id: string; plato_id: string; tipo_descuento: string; valor_descuento: number;
   mensaje: string | null; activa: boolean; expira_en: string; created_at: string;
-  platos?: Plato;
 }
 
 const AdminPromociones = () => {
@@ -27,7 +22,6 @@ const AdminPromociones = () => {
   const [unidadDuracion, setUnidadDuracion] = useState("horas");
   const [mensaje, setMensaje] = useState("");
   const [loading, setLoading] = useState(false);
-  const [confirmReplace, setConfirmReplace] = useState(false);
 
   const fetchData = async () => {
     const [{ data: p }, { data: pr }] = await Promise.all([
@@ -46,19 +40,15 @@ const AdminPromociones = () => {
     return () => { supabase.removeChannel(ch); };
   }, []);
 
-  const activePromo = promos.find(p => p.activa);
+  const activePromos = promos.filter(p => p.activa);
 
-  const activarPromo = async (force = false) => {
+  const activarPromo = async () => {
     if (!platoId || !valorDescuento || !duracion) {
       toast({ title: "Completá todos los campos", variant: "destructive" }); return;
     }
-    if (activePromo && !force) { setConfirmReplace(true); return; }
 
     setLoading(true);
     try {
-      if (activePromo) {
-        await supabase.from("promociones").update({ activa: false }).eq("id", activePromo.id);
-      }
       const durMs = Number(duracion) * (unidadDuracion === "horas" ? 3600000 : 86400000);
       const expira = new Date(Date.now() + durMs).toISOString();
       await supabase.from("promociones").insert({
@@ -81,30 +71,35 @@ const AdminPromociones = () => {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-[#f0e8d0] mb-6">Promoción activa</h1>
+      <h1 className="text-xl font-semibold text-[#f0e8d0] mb-6">Promociones activas</h1>
 
-      {activePromo && (
-        <div className="bg-[#C8860A]/10 border border-[#C8860A]/30 rounded-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[#f0e8d0] font-medium">{platoNombre(activePromo.plato_id)}</p>
-              <p className="text-[#999] text-sm">
-                {activePromo.tipo_descuento === "porcentaje" ? `${activePromo.valor_descuento}% OFF` : `$${activePromo.valor_descuento} OFF`}
-                {activePromo.mensaje && ` — ${activePromo.mensaje}`}
-              </p>
-              <p className="text-[#666] text-xs mt-1">
-                Expira: {new Date(activePromo.expira_en).toLocaleString("es-AR")}
-              </p>
+      {activePromos.length > 0 && (
+        <div className="space-y-3 mb-6">
+          {activePromos.map(promo => (
+            <div key={promo.id} className="bg-[#C8860A]/10 border border-[#C8860A]/30 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[#f0e8d0] font-medium">{platoNombre(promo.plato_id)}</p>
+                  <p className="text-[#999] text-sm">
+                    {promo.tipo_descuento === "porcentaje" ? `${promo.valor_descuento}% OFF` : `$${promo.valor_descuento} OFF`}
+                    {promo.mensaje && ` — ${promo.mensaje}`}
+                  </p>
+                  <p className="text-[#666] text-xs mt-1">
+                    Expira: {new Date(promo.expira_en).toLocaleString("es-AR")}
+                  </p>
+                </div>
+                <button onClick={() => cancelarPromo(promo.id)}
+                  className="text-sm text-red-400 hover:text-red-300 border border-red-400/30 px-3 py-1.5 rounded">
+                  Cancelar
+                </button>
+              </div>
             </div>
-            <button onClick={() => cancelarPromo(activePromo.id)}
-              className="text-sm text-red-400 hover:text-red-300 border border-red-400/30 px-3 py-1.5 rounded">
-              Cancelar
-            </button>
-          </div>
+          ))}
         </div>
       )}
 
       <div className="bg-[#1a1a1a] border border-[#222] rounded-lg p-5 space-y-4">
+        <h2 className="text-sm font-medium text-[#999]">Nueva promoción</h2>
         <div>
           <label className="block text-sm text-[#999] mb-1">Plato</label>
           <Select value={platoId} onValueChange={setPlatoId}>
@@ -168,13 +163,12 @@ const AdminPromociones = () => {
             placeholder="Semana del Lomo, Happy Hour..." />
         </div>
 
-        <button onClick={() => activarPromo()} disabled={loading}
+        <button onClick={activarPromo} disabled={loading}
           className="w-full bg-[#C8860A] hover:bg-[#a06d08] text-white font-semibold py-2.5 rounded transition-colors disabled:opacity-50">
           {loading ? "Activando..." : "ACTIVAR PROMOCIÓN"}
         </button>
       </div>
 
-      {/* Historial */}
       {promos.filter(p => !p.activa).length > 0 && (
         <div className="mt-8">
           <h2 className="text-sm font-medium text-[#999] mb-3">Historial</h2>
@@ -188,23 +182,6 @@ const AdminPromociones = () => {
           </div>
         </div>
       )}
-
-      <AlertDialog open={confirmReplace} onOpenChange={setConfirmReplace}>
-        <AlertDialogContent className="bg-[#1a1a1a] border-[#333]">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#f0e8d0]">Ya hay una promoción activa</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#999]">
-              ¿Cancelarla y crear esta nueva?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#333] text-[#999]">No</AlertDialogCancel>
-            <AlertDialogAction onClick={() => activarPromo(true)} className="bg-[#C8860A] hover:bg-[#a06d08]">
-              Sí, reemplazar
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
