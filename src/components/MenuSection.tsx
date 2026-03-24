@@ -186,6 +186,14 @@ const MenuSection = () => {
             </>
           )}
         </div>
+
+        {alertPlatoId && (
+          <PriceAlertModal
+            platos={platos}
+            initialPlatoId={alertPlatoId}
+            onClose={() => setAlertPlatoId(null)}
+          />
+        )}
       </div>
     </section>
   );

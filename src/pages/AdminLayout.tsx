@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell } from "lucide-react";
 
 const navItems = [
   { to: "/admin/carta", label: "Carta", icon: UtensilsCrossed },
@@ -11,6 +11,7 @@ const navItems = [
   { to: "/admin/promociones", label: "Promociones", icon: Tag },
   { to: "/admin/menu-del-dia", label: "Menú del Día", icon: BookOpen },
   { to: "/admin/eventos", label: "Eventos", icon: CalendarDays },
+  { to: "/admin/intereses", label: "Intereses", icon: Bell },
 ];
 
 const AdminLayout = () => {

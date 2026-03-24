@@ -116,6 +116,17 @@ const translations: Record<string, Record<Lang, string>> = {
   "events.title": { es: "No te los pierdas.", en: "Don't miss out." },
   "events.gratis": { es: "Entrada libre", en: "Free entry" },
   "events.reservar": { es: "Reservar", en: "Reserve" },
+
+  // Price alerts
+  "alert.btn": { es: "Avisame si baja", en: "Alert me if cheaper" },
+  "alert.title": { es: "Te avisamos cuando baje de precio", en: "We'll notify you when the price drops" },
+  "alert.subtitle": { es: "¿Para qué productos querés recibir alertas?", en: "Which items do you want alerts for?" },
+  "alert.selectall": { es: "Seleccionar todos", en: "Select all" },
+  "alert.how": { es: "¿Cómo preferís que te avisemos?", en: "How should we notify you?" },
+  "alert.activate": { es: "ACTIVAR ALERTAS", en: "ACTIVATE ALERTS" },
+  "alert.success.title": { es: "¡Listo!", en: "Done!" },
+  "alert.success.desc": { es: "Te avisamos cuando bajen los precios.", en: "We'll notify you when prices drop." },
+  "alert.success.close": { es: "Cerrar", en: "Close" },
 };
 
 const LangContext = createContext<LangContextType>({
