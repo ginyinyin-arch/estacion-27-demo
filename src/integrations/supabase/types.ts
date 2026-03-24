@@ -297,6 +297,56 @@ export type Database = {
           },
         ]
       }
+      reservas: {
+        Row: {
+          comentarios: string | null
+          created_at: string
+          email: string | null
+          estado: string
+          evento_id: string | null
+          fecha: string
+          hora: string
+          id: string
+          nombre: string
+          personas: number
+          telefono: string
+        }
+        Insert: {
+          comentarios?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: string
+          evento_id?: string | null
+          fecha: string
+          hora: string
+          id?: string
+          nombre: string
+          personas: number
+          telefono: string
+        }
+        Update: {
+          comentarios?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: string
+          evento_id?: string | null
+          fecha?: string
+          hora?: string
+          id?: string
+          nombre?: string
+          personas?: number
+          telefono?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
