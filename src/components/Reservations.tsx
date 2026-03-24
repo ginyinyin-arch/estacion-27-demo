@@ -124,7 +124,32 @@ const Reservations = () => {
                   <input type="text" required className="form-input" placeholder={t("res.nombre")} value={nombre} onChange={e => setNombre(e.target.value)} />
                 </Field>
                 <Field label={t("res.telefono")}>
-                  <input type="tel" required className="form-input" placeholder={t("res.telefonoPlaceholder")} value={telefono} onChange={e => setTelefono(e.target.value)} />
+                  <div className="flex gap-0">
+                    <select
+                      className="form-input rounded-r-none border-r-0 w-[30%] min-w-[100px] text-[0.78rem] pr-1"
+                      value={countryCode}
+                      onChange={e => setCountryCode(e.target.value)}
+                    >
+                      {countries.map(c => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.prefix}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      required
+                      className="form-input rounded-l-none w-[70%]"
+                      placeholder="351 5949202"
+                      value={phoneNumber}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, "");
+                        if (v.length <= 15) setPhoneNumber(v);
+                      }}
+                      minLength={7}
+                      maxLength={15}
+                    />
+                  </div>
                 </Field>
                 <Field label={t("res.email")}>
                   <input type="email" className="form-input" placeholder={t("res.emailPlaceholder")} value={email} onChange={e => setEmail(e.target.value)} />
