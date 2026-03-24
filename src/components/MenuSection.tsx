@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Wine } from "lucide-react";
+import { Wine, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
+import PriceAlertModal from "./PriceAlertModal";
 
 interface Plato {
   id: string;
