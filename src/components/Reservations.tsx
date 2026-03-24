@@ -1,13 +1,86 @@
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useLang } from "@/contexts/LangContext";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Evento {
+  id: string;
+  nombre: string;
+  nombre_en: string | null;
+  fecha: string;
+}
+
+const WHATSAPP_RESTAURANT = "543515511843";
 
 const Reservations = () => {
   const [submitted, setSubmitted] = useState(false);
-  const { t } = useLang();
+  const [loading, setLoading] = useState(false);
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const { t, lang } = useLang();
 
-  const handleSubmit = (e: FormEvent) => {
+  const [nombre, setNombre] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [email, setEmail] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [hora, setHora] = useState("");
+  const [personas, setPersonas] = useState("");
+  const [comentarios, setComentarios] = useState("");
+  const [eventoId, setEventoId] = useState("");
+
+  useEffect(() => {
+    const fetchEventos = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const { data } = await supabase
+        .from("eventos")
+        .select("id, nombre, nombre_en, fecha")
+        .eq("activo", true)
+        .gte("fecha", today)
+        .order("fecha");
+      if (data) setEventos(data);
+    };
+    fetchEventos();
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+
+    const personasNum = personas === "9+" ? 9 : parseInt(personas);
+    const eventoSeleccionado = eventoId ? eventos.find(ev => ev.id === eventoId) : null;
+
+    const { error } = await supabase.from("reservas").insert({
+      nombre,
+      telefono,
+      email: email || null,
+      fecha,
+      hora,
+      personas: personasNum,
+      comentarios: comentarios || null,
+      evento_id: eventoId || null,
+      estado: "pendiente",
+    });
+
+    if (!error) {
+      // Build WhatsApp message for the restaurant
+      let msg = `🍽️ *NUEVA RESERVA — Estación 27*\n\n`;
+      msg += `👤 Nombre: ${nombre}\n`;
+      msg += `📅 Fecha: ${fecha}\n`;
+      msg += `🕐 Hora: ${hora}\n`;
+      msg += `👥 Personas: ${personas}\n`;
+      msg += `📞 Teléfono: ${telefono}\n`;
+      if (email) msg += `📧 Email: ${email}\n`;
+      if (comentarios) msg += `💬 Comentarios: ${comentarios}\n`;
+      if (eventoSeleccionado) {
+        const evName = lang === "en" && eventoSeleccionado.nombre_en ? eventoSeleccionado.nombre_en : eventoSeleccionado.nombre;
+        msg += `🎉 Evento: ${evName}\n`;
+      }
+      msg += `\nEstado: ⏳ Pendiente de confirmación`;
+
+      const waUrl = `https://wa.me/${WHATSAPP_RESTAURANT}?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, "_blank");
+
+      setSubmitted(true);
+    }
+    setLoading(false);
   };
 
   return (
@@ -31,20 +104,46 @@ const Reservations = () => {
               <p className="font-display font-semibold italic text-base text-crema">{t("res.exito")}</p>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <Field label={t("res.nombre")}><input type="text" required className="form-input" placeholder={t("res.nombre")} /></Field>
-                <Field label={t("res.fecha")}><input type="date" required className="form-input relative" /></Field>
-                <Field label={t("res.hora")}><input type="time" required className="form-input relative" /></Field>
+                <Field label={t("res.nombre")}>
+                  <input type="text" required className="form-input" placeholder={t("res.nombre")} value={nombre} onChange={e => setNombre(e.target.value)} />
+                </Field>
+                <Field label={t("res.telefono")}>
+                  <input type="tel" required className="form-input" placeholder={t("res.telefonoPlaceholder")} value={telefono} onChange={e => setTelefono(e.target.value)} />
+                </Field>
+                <Field label={t("res.email")}>
+                  <input type="email" className="form-input" placeholder={t("res.emailPlaceholder")} value={email} onChange={e => setEmail(e.target.value)} />
+                </Field>
+                <Field label={t("res.fecha")}>
+                  <input type="date" required className="form-input relative" value={fecha} onChange={e => setFecha(e.target.value)} />
+                </Field>
+                <Field label={t("res.hora")}>
+                  <input type="time" required className="form-input relative" value={hora} onChange={e => setHora(e.target.value)} />
+                </Field>
                 <Field label={t("res.personas")}>
-                  <select required className="form-input">
+                  <select required className="form-input" value={personas} onChange={e => setPersonas(e.target.value)}>
                     <option value="">{t("res.elegir")}</option>
                     {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n}</option>)}
                     <option value="9+">{t("res.masde8")}</option>
                   </select>
                 </Field>
+                {eventos.length > 0 && (
+                  <Field label={t("res.evento")}>
+                    <select className="form-input" value={eventoId} onChange={e => setEventoId(e.target.value)}>
+                      <option value="">{t("res.sinEvento")}</option>
+                      {eventos.map(ev => (
+                        <option key={ev.id} value={ev.id}>
+                          {lang === "en" && ev.nombre_en ? ev.nombre_en : ev.nombre} — {ev.fecha}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                )}
                 <Field label={t("res.comentarios")}>
-                  <textarea rows={3} className="form-input resize-none" placeholder={t("res.placeholder")} />
+                  <textarea rows={3} className="form-input resize-none" placeholder={t("res.placeholder")} value={comentarios} onChange={e => setComentarios(e.target.value)} />
                 </Field>
-                <button type="submit" className="btn-primary w-full mt-2">{t("res.confirmar")}</button>
+                <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+                  {loading ? "..." : t("res.confirmar")}
+                </button>
               </form>
             )}
           </div>
