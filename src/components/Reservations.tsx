@@ -15,6 +15,7 @@ const Reservations = () => {
   const [loading, setLoading] = useState(false);
   const [eventos, setEventos] = useState<Evento[]>([]);
   const { t, lang } = useLang();
+  const waNumber = useWhatsappNumber();
 
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
