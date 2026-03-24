@@ -169,6 +169,15 @@ const MenuSection = () => {
                         ) : (
                           <span className="font-body font-medium text-[0.92rem] text-ambar">${d.precio.toLocaleString()}</span>
                         )}
+                        {d.disponible && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setAlertPlatoId(d.id); }}
+                            className="flex items-center gap-1 mt-1 font-body text-[0.68rem] text-crema2 hover:text-ambar transition-colors"
+                          >
+                            <Bell size={10} />
+                            {t("alert.btn")}
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
