@@ -29,6 +29,8 @@ serve(async (req) => {
 
     for (const [field, text] of Object.entries(fields)) {
       if (!text || typeof text !== "string" || text.trim() === "") continue;
+      // Skip name fields — they should not be translated
+      if (nameFields.has(field)) continue;
 
       const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
