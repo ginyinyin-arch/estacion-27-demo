@@ -17,8 +17,22 @@ const Reservations = () => {
   const { t, lang } = useLang();
   const waNumber = useWhatsappNumber();
 
+  const countries = [
+    { code: "AR", flag: "🇦🇷", name: "Argentina", prefix: "+54" },
+    { code: "BR", flag: "🇧🇷", name: "Brasil", prefix: "+55" },
+    { code: "CL", flag: "🇨🇱", name: "Chile", prefix: "+56" },
+    { code: "UY", flag: "🇺🇾", name: "Uruguay", prefix: "+598" },
+    { code: "PY", flag: "🇵🇾", name: "Paraguay", prefix: "+595" },
+    { code: "ES", flag: "🇪🇸", name: "España", prefix: "+34" },
+    { code: "US", flag: "🇺🇸", name: "Estados Unidos", prefix: "+1" },
+    { code: "MX", flag: "🇲🇽", name: "México", prefix: "+52" },
+    { code: "CO", flag: "🇨🇴", name: "Colombia", prefix: "+57" },
+    { code: "PE", flag: "🇵🇪", name: "Perú", prefix: "+51" },
+  ];
+
   const [nombre, setNombre] = useState("");
-  const [telefono, setTelefono] = useState("");
+  const [countryCode, setCountryCode] = useState("AR");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [fecha, setFecha] = useState("");
   const [hora, setHora] = useState("");
@@ -46,6 +60,8 @@ const Reservations = () => {
 
     const personasNum = personas === "9+" ? 9 : parseInt(personas);
     const eventoSeleccionado = eventoId ? eventos.find(ev => ev.id === eventoId) : null;
+    const selectedCountry = countries.find(c => c.code === countryCode)!;
+    const telefono = selectedCountry.prefix.replace("+", "") + phoneNumber;
 
     const { error } = await supabase.from("reservas").insert({
       nombre,
@@ -108,7 +124,32 @@ const Reservations = () => {
                   <input type="text" required className="form-input" placeholder={t("res.nombre")} value={nombre} onChange={e => setNombre(e.target.value)} />
                 </Field>
                 <Field label={t("res.telefono")}>
-                  <input type="tel" required className="form-input" placeholder={t("res.telefonoPlaceholder")} value={telefono} onChange={e => setTelefono(e.target.value)} />
+                  <div className="flex gap-0">
+                    <select
+                      className="form-input rounded-r-none border-r-0 w-[30%] min-w-[100px] text-[0.78rem] pr-1"
+                      value={countryCode}
+                      onChange={e => setCountryCode(e.target.value)}
+                    >
+                      {countries.map(c => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.prefix}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      required
+                      className="form-input rounded-l-none w-[70%]"
+                      placeholder="351 5949202"
+                      value={phoneNumber}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, "");
+                        if (v.length <= 15) setPhoneNumber(v);
+                      }}
+                      minLength={7}
+                      maxLength={15}
+                    />
+                  </div>
                 </Field>
                 <Field label={t("res.email")}>
                   <input type="email" className="form-input" placeholder={t("res.emailPlaceholder")} value={email} onChange={e => setEmail(e.target.value)} />
