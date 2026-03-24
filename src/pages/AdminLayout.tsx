@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { to: "/admin/carta", label: "Carta", icon: UtensilsCrossed },
@@ -17,7 +18,9 @@ const navItems = [
 
 const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const check = async () => {
@@ -42,57 +45,99 @@ const AdminLayout = () => {
 
   if (loading) return <div className="min-h-screen bg-[#111]" />;
 
+  const sidebarContent = (
+    <>
+      <nav className="flex-1 py-2">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            onClick={() => isMobile && setMenuOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${
+                isActive
+                  ? "text-[#C8860A] bg-[#C8860A]/10"
+                  : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
+              }`
+            }
+          >
+            <item.icon size={18} />
+            {item.label}
+          </NavLink>
+        ))}
+        <div className="mt-4 pt-4 border-t border-[#222]">
+          <NavLink
+            to="/admin/configuracion"
+            onClick={() => isMobile && setMenuOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${
+                isActive
+                  ? "text-[#C8860A] bg-[#C8860A]/10"
+                  : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
+              }`
+            }
+          >
+            <Settings size={18} />
+            Configuración
+          </NavLink>
+        </div>
+      </nav>
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 px-4 py-3.5 text-sm text-[#666] hover:text-red-400 transition-colors border-t border-[#222]"
+      >
+        <LogOut size={18} />
+        Cerrar sesión
+      </button>
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-[#111] flex">
-      {/* Sidebar */}
-      <aside className="w-56 bg-[#0a0a0a] border-r border-[#222] flex flex-col shrink-0 fixed h-full z-10 lg:relative">
-        <div className="p-4 border-b border-[#222]">
+      {/* Mobile header */}
+      {isMobile && (
+        <header className="fixed top-0 left-0 right-0 z-30 bg-[#0a0a0a] border-b border-[#222] flex items-center justify-between px-4 h-14">
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="text-[#f0e8d0] p-2 -ml-2"
+            aria-label="Abrir menú"
+          >
+            <Menu size={22} />
+          </button>
           <h1 className="text-[#f0e8d0] font-semibold text-sm">Panel Estación 27</h1>
-        </div>
-        <nav className="flex-1 py-2">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                  isActive
-                    ? "text-[#C8860A] bg-[#C8860A]/10"
-                    : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
-                }`
-              }
+          <div className="w-[38px]" />
+        </header>
+      )}
+
+      {/* Mobile overlay menu */}
+      {isMobile && menuOpen && (
+        <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col animate-fade-in">
+          <div className="flex items-center justify-between px-4 h-14 border-b border-[#222]">
+            <h1 className="text-[#f0e8d0] font-semibold text-sm">Panel Estación 27</h1>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="text-[#f0e8d0] p-2 -mr-2"
+              aria-label="Cerrar menú"
             >
-              <item.icon size={18} />
-              {item.label}
-            </NavLink>
-          ))}
-          <div className="mt-4 pt-4 border-t border-[#222]">
-            <NavLink
-              to="/admin/configuracion"
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                  isActive
-                    ? "text-[#C8860A] bg-[#C8860A]/10"
-                    : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
-                }`
-              }
-            >
-              <Settings size={18} />
-              Configuración
-            </NavLink>
+              <X size={22} />
+            </button>
           </div>
-        </nav>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 text-sm text-[#666] hover:text-red-400 transition-colors border-t border-[#222]"
-        >
-          <LogOut size={18} />
-          Cerrar sesión
-        </button>
-      </aside>
+          {sidebarContent}
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      {!isMobile && (
+        <aside className="w-56 bg-[#0a0a0a] border-r border-[#222] flex flex-col shrink-0 sticky top-0 h-screen">
+          <div className="p-4 border-b border-[#222]">
+            <h1 className="text-[#f0e8d0] font-semibold text-sm">Panel Estación 27</h1>
+          </div>
+          {sidebarContent}
+        </aside>
+      )}
 
       {/* Main content */}
-      <main className="flex-1 p-6 lg:p-8 ml-56 lg:ml-0 overflow-auto">
+      <main className={`flex-1 overflow-auto ${isMobile ? "pt-14 px-4 pb-6" : "p-6 lg:p-8"}`}>
         <Outlet />
       </main>
     </div>
