@@ -44,11 +44,14 @@ const AdminMenuDelDia = () => {
     if (menuHoy) {
       await supabase.from("menu_del_dia").update({ activo: false }).eq("id", menuHoy.id);
     }
-    await supabase.from("menu_del_dia").insert({
+    const { data: newMenu } = await supabase.from("menu_del_dia").insert({
       entrada: entrada || null, plato_principal: platoPrincipal,
       postre: postre || null, bebida_incluida: bebida,
       precio: Number(precio), valido_hasta_hora: validoHasta, fecha: hoy,
-    });
+    }).select("id").single();
+    if (newMenu) {
+      supabase.functions.invoke("auto-translate", { body: { table: "menu_del_dia", id: newMenu.id, fields: { entrada: entrada || null, plato_principal: platoPrincipal, postre: postre || null } } });
+    }
     toast({ title: "Menú del día publicado" });
     setEntrada(""); setPlatoPrincipal(""); setPostre(""); setPrecio(""); setBebida(false);
     setLoading(false);
