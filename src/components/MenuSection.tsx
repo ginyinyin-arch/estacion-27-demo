@@ -39,6 +39,16 @@ const MenuSection = () => {
   const [platos, setPlatos] = useState<Plato[]>([]);
   const [promo, setPromo] = useState<Promo | null>(null);
   const { lang, t } = useLang();
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTab = (cat: string) => {
+    const container = tabsRef.current;
+    if (!container) return;
+    const btn = container.querySelector(`[data-tab="${cat}"]`) as HTMLElement;
+    if (!btn) return;
+    const left = btn.offsetLeft - container.offsetWidth / 2 + btn.offsetWidth / 2;
+    container.scrollTo({ left, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const fetchPlatos = async () => {

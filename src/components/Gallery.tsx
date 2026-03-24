@@ -37,7 +37,7 @@ const Gallery = () => {
   }, [lightbox, close, prev, next]);
 
   return (
-    <section className="bg-carbon py-20 px-4 lg:px-6">
+    <section ref={sectionRef} className="bg-carbon py-20 px-4 lg:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
