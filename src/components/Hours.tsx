@@ -77,8 +77,10 @@ const Hours = () => {
               )}
             </InfoCard>
             <InfoCard icon={<MapPin size={24} className="text-ambar" />} title={t("hours.direccion")}>
-              <p>27 de Abril 366, Centro</p>
-              <p>Córdoba, Argentina</p>
+              <a href="https://www.google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b" target="_blank" rel="noopener noreferrer" className="hover:text-ambar transition-colors cursor-pointer select-text">
+                <p>27 de Abril 366, Centro</p>
+                <p>Córdoba, Argentina</p>
+              </a>
             </InfoCard>
             <InfoCard icon={<Phone size={24} className="text-ambar" />} title={t("hours.contacto")}>
               <p>(0351) 425-1651</p>
