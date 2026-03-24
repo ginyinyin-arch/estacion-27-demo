@@ -38,6 +38,45 @@ export type Database = {
         }
         Relationships: []
       }
+      eventos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          descripcion: string | null
+          fecha: string
+          hora_inicio: string
+          id: string
+          imagen_url: string | null
+          nombre: string
+          precio_entrada: number
+          requiere_reserva: boolean
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          fecha: string
+          hora_inicio: string
+          id?: string
+          imagen_url?: string | null
+          nombre: string
+          precio_entrada?: number
+          requiere_reserva?: boolean
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          fecha?: string
+          hora_inicio?: string
+          id?: string
+          imagen_url?: string | null
+          nombre?: string
+          precio_entrada?: number
+          requiere_reserva?: boolean
+        }
+        Relationships: []
+      }
       galeria: {
         Row: {
           created_at: string
@@ -83,6 +122,45 @@ export type Database = {
         }
         Relationships: []
       }
+      menu_del_dia: {
+        Row: {
+          activo: boolean
+          bebida_incluida: boolean
+          created_at: string
+          entrada: string | null
+          fecha: string
+          id: string
+          plato_principal: string
+          postre: string | null
+          precio: number
+          valido_hasta_hora: string
+        }
+        Insert: {
+          activo?: boolean
+          bebida_incluida?: boolean
+          created_at?: string
+          entrada?: string | null
+          fecha?: string
+          id?: string
+          plato_principal: string
+          postre?: string | null
+          precio: number
+          valido_hasta_hora?: string
+        }
+        Update: {
+          activo?: boolean
+          bebida_incluida?: boolean
+          created_at?: string
+          entrada?: string | null
+          fecha?: string
+          id?: string
+          plato_principal?: string
+          postre?: string | null
+          precio?: number
+          valido_hasta_hora?: string
+        }
+        Relationships: []
+      }
       platos: {
         Row: {
           categoria: string
@@ -121,6 +199,47 @@ export type Database = {
           precio?: number
         }
         Relationships: []
+      }
+      promociones: {
+        Row: {
+          activa: boolean
+          created_at: string
+          expira_en: string
+          id: string
+          mensaje: string | null
+          plato_id: string
+          tipo_descuento: string
+          valor_descuento: number
+        }
+        Insert: {
+          activa?: boolean
+          created_at?: string
+          expira_en: string
+          id?: string
+          mensaje?: string | null
+          plato_id: string
+          tipo_descuento: string
+          valor_descuento: number
+        }
+        Update: {
+          activa?: boolean
+          created_at?: string
+          expira_en?: string
+          id?: string
+          mensaje?: string | null
+          plato_id?: string
+          tipo_descuento?: string
+          valor_descuento?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promociones_plato_id_fkey"
+            columns: ["plato_id"]
+            isOneToOne: false
+            referencedRelation: "platos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
