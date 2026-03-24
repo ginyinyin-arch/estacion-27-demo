@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings } from "lucide-react";
 
 const navItems = [
   { to: "/admin/carta", label: "Carta", icon: UtensilsCrossed },
-  { to: "/admin/horarios", label: "Horarios", icon: Clock },
-  { to: "/admin/galeria", label: "Galería", icon: Image },
-  { to: "/admin/estado", label: "Estado", icon: Store },
-  { to: "/admin/promociones", label: "Promociones", icon: Tag },
   { to: "/admin/menu-del-dia", label: "Menú del Día", icon: BookOpen },
-  { to: "/admin/eventos", label: "Eventos", icon: CalendarDays },
+  { to: "/admin/promociones", label: "Promociones", icon: Tag },
   { to: "/admin/intereses", label: "Intereses", icon: Bell },
+  { to: "/admin/horarios", label: "Horarios", icon: Clock },
+  { to: "/admin/estado", label: "Estado", icon: Store },
+  { to: "/admin/galeria", label: "Galería", icon: Image },
+  { to: "/admin/eventos", label: "Eventos", icon: CalendarDays },
 ];
 
 const AdminLayout = () => {
@@ -65,6 +65,21 @@ const AdminLayout = () => {
               {item.label}
             </NavLink>
           ))}
+          <div className="mt-4 pt-4 border-t border-[#222]">
+            <NavLink
+              to="/admin/configuracion"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                  isActive
+                    ? "text-[#C8860A] bg-[#C8860A]/10"
+                    : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
+                }`
+              }
+            >
+              <Settings size={18} />
+              Configuración
+            </NavLink>
+          </div>
         </nav>
         <button
           onClick={handleLogout}
