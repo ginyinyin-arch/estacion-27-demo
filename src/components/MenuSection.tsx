@@ -62,6 +62,8 @@ const MenuSection = () => {
     return () => { supabase.removeChannel(ch1); supabase.removeChannel(ch2); };
   }, []);
 
+  const [alertPlatoId, setAlertPlatoId] = useState<string | null>(null);
+
   const activePlatos = platos.filter((p) => p.categoria === active);
   const image = categoryImages[active];
 
