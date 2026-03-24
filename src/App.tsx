@@ -11,6 +11,9 @@ import AdminCarta from "./pages/admin/AdminCarta.tsx";
 import AdminHorarios from "./pages/admin/AdminHorarios.tsx";
 import AdminGaleria from "./pages/admin/AdminGaleria.tsx";
 import AdminEstado from "./pages/admin/AdminEstado.tsx";
+import AdminPromociones from "./pages/admin/AdminPromociones.tsx";
+import AdminMenuDelDia from "./pages/admin/AdminMenuDelDia.tsx";
+import AdminEventos from "./pages/admin/AdminEventos.tsx";
 
 const queryClient = new QueryClient();
 
