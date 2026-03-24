@@ -7,6 +7,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLang();
+  const waNumber = useWhatsappNumber();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
