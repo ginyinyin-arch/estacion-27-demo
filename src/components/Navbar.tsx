@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
+import { useWhatsappNumber } from "@/hooks/use-whatsapp-number";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
