@@ -77,7 +77,7 @@ const Hours = () => {
               )}
             </InfoCard>
             <InfoCard icon={<MapPin size={24} className="text-ambar" />} title={t("hours.direccion")}>
-              <a href="https://www.google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b" target="_blank" rel="noopener noreferrer" className="hover:text-ambar transition-colors cursor-pointer select-text">
+              <a href="https://www.google.com/maps/place/estacion+27+cordoba/data=!4m2!3m1!1s0x9432a2818788c5bd:0xe90868ad3279c90b" target="_blank" rel="noopener noreferrer" className="underline decoration-ambar/60 underline-offset-4 hover:decoration-ambar hover:text-ambar transition-colors cursor-pointer select-text">
                 <p>27 de Abril 366, Centro</p>
                 <p>Córdoba, Argentina</p>
               </a>
