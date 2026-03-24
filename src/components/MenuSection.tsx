@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Wine } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLang } from "@/contexts/LangContext";
 
 interface Plato {
   id: string;
   categoria: string;
   nombre: string;
+  nombre_en: string | null;
   descripcion: string | null;
+  descripcion_en: string | null;
   precio: number;
   imagen_url: string | null;
   disponible: boolean;
@@ -22,23 +25,10 @@ interface Promo {
   expira_en: string;
 }
 
-const categoryMap: Record<string, string> = {
-  "Lomos": "LOMOS",
-  "Hamburguesas": "HAMBURGUESAS",
-  "Tex Mex": "TEX MEX",
-  "Ensaladas": "ENSALADAS",
-  "Picadas": "PICADAS",
-  "Bar": "BAR",
-};
-
 const categoryImages: Record<string, string> = {
   "Lomos": "/images/lomo.jpg",
   "Tex Mex": "/images/tacos.jpg",
   "Ensaladas": "/images/wrap.jpg",
-};
-
-const categorySubtitles: Record<string, string> = {
-  "Lomos": "EL LOMO ESTACIÓN — Nuestra especialidad.",
 };
 
 const categorias = ["Lomos", "Hamburguesas", "Tex Mex", "Ensaladas", "Picadas", "Bar"];
@@ -47,11 +37,12 @@ const MenuSection = () => {
   const [active, setActive] = useState("Lomos");
   const [platos, setPlatos] = useState<Plato[]>([]);
   const [promo, setPromo] = useState<Promo | null>(null);
+  const { lang, t } = useLang();
 
   useEffect(() => {
     const fetchPlatos = async () => {
       const { data } = await supabase.from("platos").select("*").order("orden", { ascending: true });
-      if (data) setPlatos(data);
+      if (data) setPlatos(data as Plato[]);
     };
     const fetchPromo = async () => {
       const { data } = await supabase.from("promociones").select("plato_id, tipo_descuento, valor_descuento, activa, expira_en")
@@ -72,53 +63,43 @@ const MenuSection = () => {
 
   const activePlatos = platos.filter((p) => p.categoria === active);
   const image = categoryImages[active];
-  const subtitle = categorySubtitles[active];
+
+  const getName = (p: Plato) => (lang === "en" && p.nombre_en) ? p.nombre_en : p.nombre;
+  const getDesc = (p: Plato) => (lang === "en" && p.descripcion_en) ? p.descripcion_en : p.descripcion;
 
   return (
     <section id="carta" className="bg-negro py-24 px-4 lg:px-6">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
             <span className="w-12 h-px bg-ambar" />
-            <span className="label-amber">LA CARTA</span>
+            <span className="label-amber">{t("menu.label")}</span>
             <span className="w-12 h-px bg-ambar" />
           </div>
           <h2 className="font-display font-bold italic text-crema" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)" }}>
-            Treinta años perfeccionando cada plato.
+            {t("menu.title")}
           </h2>
-          <p className="font-body font-light text-[0.95rem] text-crema2 mt-3">
-            Cocina de autor, ingredientes frescos, recetas propias.
-          </p>
+          <p className="font-body font-light text-[0.95rem] text-crema2 mt-3">{t("menu.subtitle")}</p>
         </div>
 
-        {/* Tabs */}
         <div className="flex overflow-x-auto gap-1 mb-10 pb-2" style={{ scrollbarWidth: "none" }}>
           {categorias.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
+            <button key={c} onClick={() => setActive(c)}
               className={`font-body font-medium text-[0.73rem] uppercase tracking-[0.18em] px-[18px] py-2.5 whitespace-nowrap transition-colors duration-200 border-b-2 ${
-                active === c
-                  ? "text-ambar border-ambar"
-                  : "text-gris border-transparent hover:text-crema"
-              }`}
-            >
-              {categoryMap[c] || c}
+                active === c ? "text-ambar border-ambar" : "text-gris border-transparent hover:text-crema"
+              }`}>
+              {t(`menu.tab.${c}`)}
             </button>
           ))}
         </div>
 
-        {/* Content */}
         <div key={active} className="animate-fade-in-up">
           {active === "Bar" ? (
             <div className="bg-madera rounded p-8 md:p-12 text-center">
               <Wine size={40} className="text-ambar mx-auto mb-4" />
-              <h3 className="font-display font-bold italic text-2xl text-crema mb-3">
-                Gin, Vermouth & Coctelería
-              </h3>
+              <h3 className="font-display font-bold italic text-2xl text-crema mb-3">{t("menu.bar.title")}</h3>
               <p className="font-body font-light text-crema2 max-w-md mx-auto">
-                {activePlatos[0]?.descripcion || "Carta de tragos, gin tonic de autor, vermouths clásicos y cocteles de la casa. Preguntanos en el salón."}
+                {(activePlatos[0] ? getDesc(activePlatos[0]) : null) || t("menu.bar.desc")}
               </p>
             </div>
           ) : (
@@ -128,9 +109,9 @@ const MenuSection = () => {
                   <div className="relative w-full h-[280px] md:h-[360px] rounded overflow-hidden">
                     <img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-negro/70 via-negro/20 to-transparent pointer-events-none" />
-                    {subtitle && (
+                    {active === "Lomos" && (
                       <p className="absolute bottom-4 left-0 right-0 text-center font-display font-semibold italic text-crema/80 text-sm">
-                        {subtitle}
+                        {t("menu.lomo.subtitle")}
                       </p>
                     )}
                   </div>
@@ -138,45 +119,35 @@ const MenuSection = () => {
               )}
               <div className="grid md:grid-cols-2 gap-4">
                 {activePlatos.map((d) => (
-                  <div
-                    key={d.id}
-                    className={`bg-carbon border rounded p-5 flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 ${
-                      !d.disponible ? "opacity-60" : ""
-                    }`}
+                  <div key={d.id}
+                    className={`bg-carbon border rounded p-5 flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 ${!d.disponible ? "opacity-60" : ""}`}
                     style={{ borderColor: "rgba(240,232,208,0.06)" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)";
-                      e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
-                  >
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)"; e.currentTarget.style.boxShadow = "none"; }}>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`font-display font-semibold text-[1.05rem] text-crema ${!d.disponible ? "line-through" : ""}`}>
-                          {d.nombre}
+                          {getName(d)}
                         </span>
                         {!d.disponible && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-gris border border-gris/40 px-1.5 py-0.5 rounded-sm">
-                            No disponible
+                            {t("menu.badge.nodisponible")}
                           </span>
                         )}
                         {promo && promo.plato_id === d.id && d.disponible && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-negro bg-ambar px-1.5 py-0.5 rounded-sm">
-                            OFERTA {promo.tipo_descuento === "porcentaje" ? `-${promo.valor_descuento}%` : `-$${promo.valor_descuento}`}
+                            {t("menu.badge.oferta")} {promo.tipo_descuento === "porcentaje" ? `-${promo.valor_descuento}%` : `-$${promo.valor_descuento}`}
                           </span>
                         )}
-                        {d.nombre.includes("★") && d.disponible && !promo?.plato_id?.includes(d.id) && (
+                        {d.nombre.includes("★") && d.disponible && !(promo?.plato_id === d.id) && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-ambar border border-ambar px-1.5 py-0.5 rounded-sm">
-                            ESPECIALIDAD
+                            {t("menu.badge.especialidad")}
                           </span>
                         )}
                       </div>
-                      {d.descripcion && (
+                      {getDesc(d) && (
                         <p className="font-body font-light text-[0.84rem] text-crema2 leading-[1.65] mt-1 max-w-[85%]">
-                          {d.descripcion}
+                          {getDesc(d)}
                         </p>
                       )}
                     </div>
@@ -184,9 +155,7 @@ const MenuSection = () => {
                       <div className="text-right whitespace-nowrap">
                         {promo && promo.plato_id === d.id ? (
                           <>
-                            <span className="font-body text-[0.78rem] text-gris line-through block">
-                              ${d.precio.toLocaleString()}
-                            </span>
+                            <span className="font-body text-[0.78rem] text-gris line-through block">${d.precio.toLocaleString()}</span>
                             <span className="font-body font-bold text-[1.05rem] text-ambar">
                               ${(promo.tipo_descuento === "porcentaje"
                                 ? Math.round(d.precio * (1 - promo.valor_descuento / 100))
@@ -195,9 +164,7 @@ const MenuSection = () => {
                             </span>
                           </>
                         ) : (
-                          <span className="font-body font-medium text-[0.92rem] text-ambar">
-                            ${d.precio.toLocaleString()}
-                          </span>
+                          <span className="font-body font-medium text-[0.92rem] text-ambar">${d.precio.toLocaleString()}</span>
                         )}
                       </div>
                     )}
