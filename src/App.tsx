@@ -16,6 +16,7 @@ import AdminPromociones from "./pages/admin/AdminPromociones.tsx";
 import AdminMenuDelDia from "./pages/admin/AdminMenuDelDia.tsx";
 import AdminEventos from "./pages/admin/AdminEventos.tsx";
 import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
+import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 
 const queryClient = new QueryClient();
