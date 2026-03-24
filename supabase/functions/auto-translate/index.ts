@@ -20,7 +20,10 @@ serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    const systemPrompt = "Translate the following Argentine Spanish restaurant text to natural English. Keep names of dishes in Spanish when they are proper names (like 'Lomo Estación'). Return only the translated text, nothing else.";
+    const systemPrompt = "Translate the following Argentine Spanish restaurant text to natural English. Keep all dish names, category names, and event names in their original Spanish form. Translate only descriptions, ingredients, and informational text. Return only the translated text, nothing else.";
+
+    // Fields that are names and should NOT be translated
+    const nameFields = new Set(["nombre", "categoria"]);
 
     const updates: Record<string, string> = {};
 
