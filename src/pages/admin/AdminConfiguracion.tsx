@@ -9,12 +9,28 @@ const AdminConfiguracion = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [whatsapp, setWhatsapp] = useState("");
+  const [savingWa, setSavingWa] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setEmail(data.user.email);
     });
+    supabase.from("configuracion").select("whatsapp_numero").limit(1).single().then(({ data }) => {
+      if (data?.whatsapp_numero) setWhatsapp(data.whatsapp_numero);
+    });
   }, []);
+
+  const handleSaveWhatsapp = async () => {
+    setSavingWa(true);
+    const { error } = await supabase.from("configuracion").update({ whatsapp_numero: whatsapp, updated_at: new Date().toISOString() }).not("id", "is", null);
+    if (error) {
+      toast({ title: "Error al guardar", variant: "destructive" });
+    } else {
+      toast({ title: "Número actualizado correctamente" });
+    }
+    setSavingWa(false);
+  };
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
