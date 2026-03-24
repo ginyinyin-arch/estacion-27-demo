@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLang } from "@/contexts/LangContext";
+import { useWhatsappNumber } from "@/hooks/use-whatsapp-number";
 
 const WhatsAppButton = () => {
   const [visible, setVisible] = useState(false);
   const { t } = useLang();
+  const waNumber = useWhatsappNumber();
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 1500);
@@ -14,7 +16,7 @@ const WhatsAppButton = () => {
 
   return (
     <a
-      href="https://wa.me/543514251651?text=Hola%20Estación%2027!%20Quiero%20hacer%20una%20reserva."
+      href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hola Estación 27! Quiero hacer una reserva.")}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-7 right-7 z-50 flex items-center gap-2 px-5 py-3 rounded-sm font-body font-semibold text-[0.82rem] transition-all duration-200 hover:-translate-y-0.5 animate-slide-in-right"

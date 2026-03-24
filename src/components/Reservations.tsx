@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useLang } from "@/contexts/LangContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useWhatsappNumber } from "@/hooks/use-whatsapp-number";
 
 interface Evento {
   id: string;
@@ -9,13 +10,12 @@ interface Evento {
   fecha: string;
 }
 
-const WHATSAPP_RESTAURANT = "543515511843";
-
 const Reservations = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [eventos, setEventos] = useState<Evento[]>([]);
   const { t, lang } = useLang();
+  const waNumber = useWhatsappNumber();
 
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -75,7 +75,7 @@ const Reservations = () => {
       }
       msg += `\nEstado: ⏳ Pendiente de confirmación`;
 
-      const waUrl = `https://wa.me/${WHATSAPP_RESTAURANT}?text=${encodeURIComponent(msg)}`;
+      const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, "_blank");
 
       setSubmitted(true);
@@ -151,7 +151,7 @@ const Reservations = () => {
           <div className="bg-carbon rounded p-8 self-start" style={{ border: "1px solid rgba(240,232,208,0.08)" }}>
             <img src="/images/logo.png" alt="" className="h-16 mx-auto mb-6" style={{ filter: "invert(1)", opacity: 0.80 }} />
             <h3 className="font-display font-semibold text-crema text-center text-lg mb-6">{t("res.llamar")}</h3>
-            <a href="https://wa.me/543514251651?text=Hola%20Estación%2027!%20Quiero%20hacer%20una%20reserva." target="_blank" rel="noopener noreferrer"
+            <a href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hola Estación 27! Quiero hacer una reserva.")}`} target="_blank" rel="noopener noreferrer"
               className="block w-full text-center font-body font-semibold text-[0.82rem] py-3 rounded-sm mb-3 transition-colors"
               style={{ background: "#25D366", color: "#fff" }}>
               {t("res.whatsapp")}
