@@ -15,6 +15,7 @@ import AdminEstado from "./pages/admin/AdminEstado.tsx";
 import AdminPromociones from "./pages/admin/AdminPromociones.tsx";
 import AdminMenuDelDia from "./pages/admin/AdminMenuDelDia.tsx";
 import AdminEventos from "./pages/admin/AdminEventos.tsx";
+import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 
 const queryClient = new QueryClient();
 
