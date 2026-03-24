@@ -276,3 +276,19 @@
   .hook-item .photo-wrapper { width: 80px; height: 104px; }
   .hook-item { margin: 0 8px; }
 }
+
+/* ── Admin panel ── */
+.admin-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #222;
+  border: 1px solid #444;
+  color: #f0e8d0;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.admin-input:focus {
+  border-color: #C8860A;
+}
