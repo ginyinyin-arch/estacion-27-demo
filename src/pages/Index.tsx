@@ -9,6 +9,7 @@ import Hours from "@/components/Hours";
 import Reservations from "@/components/Reservations";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import ClosedBanner from "@/components/ClosedBanner";
 
 const Index = () => {
   useEffect(() => {
@@ -30,6 +31,7 @@ const Index = () => {
   return (
     <>
       <Navbar />
+      <ClosedBanner />
       <Hero />
       <Divider />
       <MenuSection />

@@ -1,6 +1,57 @@
+import { useEffect, useState } from "react";
 import { Clock, MapPin, Phone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Horario {
+  dia: string;
+  hora_apertura: string;
+  hora_cierre: string;
+  cerrado: boolean;
+}
 
 const Hours = () => {
+  const [horarios, setHorarios] = useState<Horario[]>([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await supabase.from("horarios").select("*");
+      if (data) setHorarios(data);
+    };
+    fetch();
+
+    const channel = supabase
+      .channel("horarios-public")
+      .on("postgres_changes", { event: "*", schema: "public", table: "horarios" }, () => fetch())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const formatHorarios = () => {
+    if (horarios.length === 0) return null;
+    const lunesSabado = horarios.filter((h) => h.dia !== "domingo");
+    const domingo = horarios.find((h) => h.dia === "domingo");
+    const allSame = lunesSabado.every(
+      (h) => !h.cerrado && h.hora_apertura === lunesSabado[0]?.hora_apertura && h.hora_cierre === lunesSabado[0]?.hora_cierre
+    );
+
+    return (
+      <>
+        {allSame && lunesSabado[0] && !lunesSabado[0].cerrado ? (
+          <p>Lunes a Sábados: {lunesSabado[0].hora_apertura} a {lunesSabado[0].hora_cierre} hs</p>
+        ) : (
+          lunesSabado.map((h) => (
+            <p key={h.dia} className="capitalize">
+              {h.dia}: {h.cerrado ? "Cerrado" : `${h.hora_apertura} a ${h.hora_cierre} hs`}
+            </p>
+          ))
+        )}
+        {domingo && (
+          <p>Domingos: {domingo.cerrado ? "Cerrado" : `${domingo.hora_apertura} a ${domingo.hora_cierre} hs`}</p>
+        )}
+      </>
+    );
+  };
+
   return (
     <section id="horarios" className="bg-carbon py-20 px-4 lg:px-6">
       <div className="max-w-6xl mx-auto">
@@ -16,11 +67,14 @@ const Hours = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-10">
-          {/* Info cards */}
           <div className="space-y-6">
             <InfoCard icon={<Clock size={24} className="text-ambar" />} title="Horarios">
-              <p>Lunes a Sábados: 08:00 a 02:00 hs</p>
-              <p>Domingos: 20:00 a 02:00 hs</p>
+              {formatHorarios() || (
+                <>
+                  <p>Lunes a Sábados: 08:00 a 02:00 hs</p>
+                  <p>Domingos: 20:00 a 02:00 hs</p>
+                </>
+              )}
             </InfoCard>
             <InfoCard icon={<MapPin size={24} className="text-ambar" />} title="Dirección">
               <p>27 de Abril 366, Centro</p>
@@ -29,18 +83,12 @@ const Hours = () => {
             </InfoCard>
             <InfoCard icon={<Phone size={24} className="text-ambar" />} title="Contacto">
               <p>(0351) 425-1651</p>
-              <a
-                href="https://instagram.com/estacionveintisiete"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ambar hover:underline"
-              >
+              <a href="https://instagram.com/estacionveintisiete" target="_blank" rel="noopener noreferrer" className="text-ambar hover:underline">
                 @estacionveintisiete
               </a>
             </InfoCard>
           </div>
 
-          {/* Map */}
           <div className="rounded overflow-hidden" style={{ border: "1px solid rgba(240,232,208,0.10)" }}>
             <iframe
               src="https://maps.google.com/maps?q=27+de+Abril+366+Córdoba+Argentina&output=embed"
