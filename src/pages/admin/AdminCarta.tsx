@@ -170,7 +170,7 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
       const newPrecio = Number(precio);
       await supabase.from("platos").update({ nombre, descripcion: descripcion || null, precio: newPrecio, imagen_url }).eq("id", plato.id);
       // Trigger auto-translate
-      supabase.functions.invoke("auto-translate", { body: { table: "platos", id: plato.id, fields: { nombre, descripcion: descripcion || null } } });
+      supabase.functions.invoke("auto-translate", { body: { table: "platos", id: plato.id, fields: { descripcion: descripcion || null } } });
       // Notify price drop subscribers if price decreased
       if (newPrecio < plato.precio) {
         supabase.functions.invoke("notify-price-drop", { body: { plato_id: plato.id, precio_anterior: plato.precio, precio_nuevo: newPrecio } });
@@ -179,7 +179,7 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
     } else {
       const { data: newPlato } = await supabase.from("platos").insert({ categoria, nombre, descripcion: descripcion || null, precio: Number(precio), imagen_url, orden: maxOrden || 1 }).select("id").single();
       if (newPlato) {
-        supabase.functions.invoke("auto-translate", { body: { table: "platos", id: newPlato.id, fields: { nombre, descripcion: descripcion || null } } });
+        supabase.functions.invoke("auto-translate", { body: { table: "platos", id: newPlato.id, fields: { descripcion: descripcion || null } } });
       }
       toast.success("Plato agregado");
     }

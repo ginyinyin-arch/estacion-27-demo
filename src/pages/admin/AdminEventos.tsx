@@ -66,7 +66,7 @@ const AdminEventos = () => {
       requiere_reserva: requiereReserva,
     }).select("id").single();
     if (newEvento) {
-      supabase.functions.invoke("auto-translate", { body: { table: "eventos", id: newEvento.id, fields: { nombre, descripcion: descripcion || null } } });
+      supabase.functions.invoke("auto-translate", { body: { table: "eventos", id: newEvento.id, fields: { descripcion: descripcion || null } } });
     }
     toast({ title: "Evento publicado" });
     setNombre(""); setDescripcion(""); setFecha(undefined); setPrecioEntrada("0");
