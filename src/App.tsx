@@ -16,6 +16,7 @@ import AdminPromociones from "./pages/admin/AdminPromociones.tsx";
 import AdminMenuDelDia from "./pages/admin/AdminMenuDelDia.tsx";
 import AdminEventos from "./pages/admin/AdminEventos.tsx";
 import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
+import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/admin/menu-del-dia" element={<AdminMenuDelDia />} />
               <Route path="/admin/eventos" element={<AdminEventos />} />
               <Route path="/admin/intereses" element={<AdminIntereses />} />
+              <Route path="/admin/reservas" element={<AdminReservas />} />
               <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
             </Route>
             <Route path="*" element={<NotFound />} />
