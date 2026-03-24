@@ -15,6 +15,11 @@ const images = [
 
 const Gallery = () => {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const isMobile = useIsMobile();
+  const sectionRef = useCallback((node: HTMLElement | null) => {
+    if (node) (Gallery as any)._sectionRef = node;
+  }, []);
 
   const close = useCallback(() => setLightbox(null), []);
   const prev = useCallback(() => setLightbox((i) => (i !== null ? (i - 1 + images.length) % images.length : null)), []);
