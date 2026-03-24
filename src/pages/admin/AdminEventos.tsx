@@ -59,12 +59,15 @@ const AdminEventos = () => {
         imagenUrl = urlData.publicUrl;
       }
     }
-    await supabase.from("eventos").insert({
+    const { data: newEvento } = await supabase.from("eventos").insert({
       nombre, descripcion: descripcion || null,
       fecha: format(fecha, "yyyy-MM-dd"), hora_inicio: horaInicio,
       imagen_url: imagenUrl, precio_entrada: Number(precioEntrada),
       requiere_reserva: requiereReserva,
-    });
+    }).select("id").single();
+    if (newEvento) {
+      supabase.functions.invoke("auto-translate", { body: { table: "eventos", id: newEvento.id, fields: { nombre, descripcion: descripcion || null } } });
+    }
     toast({ title: "Evento publicado" });
     setNombre(""); setDescripcion(""); setFecha(undefined); setPrecioEntrada("0");
     setRequiereReserva(false); setImagenFile(null);

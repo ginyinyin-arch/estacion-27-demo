@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { LangProvider } from "@/contexts/LangContext";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
@@ -20,24 +21,26 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route element={<AdminLayout />}>
-            <Route path="/admin/carta" element={<AdminCarta />} />
-            <Route path="/admin/horarios" element={<AdminHorarios />} />
-            <Route path="/admin/galeria" element={<AdminGaleria />} />
-            <Route path="/admin/estado" element={<AdminEstado />} />
-            <Route path="/admin/promociones" element={<AdminPromociones />} />
-            <Route path="/admin/menu-del-dia" element={<AdminMenuDelDia />} />
-            <Route path="/admin/eventos" element={<AdminEventos />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <LangProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route element={<AdminLayout />}>
+              <Route path="/admin/carta" element={<AdminCarta />} />
+              <Route path="/admin/horarios" element={<AdminHorarios />} />
+              <Route path="/admin/galeria" element={<AdminGaleria />} />
+              <Route path="/admin/estado" element={<AdminEstado />} />
+              <Route path="/admin/promociones" element={<AdminPromociones />} />
+              <Route path="/admin/menu-del-dia" element={<AdminMenuDelDia />} />
+              <Route path="/admin/eventos" element={<AdminEventos />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </LangProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

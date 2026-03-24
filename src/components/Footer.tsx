@@ -1,43 +1,46 @@
 import { MapPin, Phone } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 const Footer = () => {
+  const { t } = useLang();
+
   const handleNav = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const navLinks = [
+    { label: t("footer.carta"), href: "#carta" },
+    { label: t("footer.nosotros"), href: "#nosotros" },
+    { label: t("footer.horarios"), href: "#horarios" },
+    { label: t("footer.reservas"), href: "#reservas" },
+  ];
+
   return (
     <footer className="pt-14 pb-7 px-4 lg:px-6" style={{ background: "#080605", borderTop: "1px solid rgba(240,232,208,0.08)" }}>
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 mb-10">
-        {/* Col 1 */}
         <div>
           <img src="/images/logo.png" alt="Estación 27" className="h-[72px] mb-3" style={{ filter: "invert(1)", opacity: 0.75 }} />
           <p className="font-display font-bold text-[1.1rem] text-crema tracking-[0.10em]">ESTACIÓN 27</p>
-          <p className="font-body font-light text-[0.82rem] text-crema2 mt-1">Cocina de Autor · Desde 1991</p>
+          <p className="font-body font-light text-[0.82rem] text-crema2 mt-1">{t("footer.tagline")}</p>
         </div>
 
-        {/* Col 2 */}
         <div>
           <h4 className="font-body font-medium text-[0.68rem] uppercase tracking-[0.20em] mb-4" style={{ color: "rgba(240,232,208,0.35)" }}>
-            NAVEGACIÓN
+            {t("footer.nav")}
           </h4>
           <div className="flex flex-col gap-2.5">
-            {["Carta", "Nosotros", "Horarios", "Reservas"].map((l) => (
-              <a
-                key={l}
-                href={`#${l.toLowerCase()}`}
-                onClick={(e) => { e.preventDefault(); handleNav(`#${l.toLowerCase()}`); }}
-                className="font-body font-light text-[0.86rem] text-crema2 hover:text-crema transition-colors duration-200"
-              >
-                {l}
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} onClick={(e) => { e.preventDefault(); handleNav(l.href); }}
+                className="font-body font-light text-[0.86rem] text-crema2 hover:text-crema transition-colors duration-200">
+                {l.label}
               </a>
             ))}
           </div>
         </div>
 
-        {/* Col 3 */}
         <div>
           <h4 className="font-body font-medium text-[0.68rem] uppercase tracking-[0.20em] mb-4" style={{ color: "rgba(240,232,208,0.35)" }}>
-            CONTACTO
+            {t("footer.contacto")}
           </h4>
           <div className="space-y-2.5 font-body font-light text-[0.86rem] text-crema2">
             <p className="flex items-center gap-2"><MapPin size={14} className="text-ambar" /> 27 de Abril 366, Centro, Córdoba</p>
@@ -52,13 +55,12 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom */}
       <div className="flex flex-wrap justify-between items-center pt-5" style={{ borderTop: "1px solid rgba(240,232,208,0.07)" }}>
         <span className="font-body font-light text-[0.74rem]" style={{ color: "rgba(240,232,208,0.30)" }}>
           © 2026 Estación 27 · Córdoba, Argentina
         </span>
         <span className="font-body font-light text-[0.74rem]" style={{ color: "rgba(240,232,208,0.30)" }}>
-          Web por <a href="#" className="hover:underline">MG Web Studio</a>
+          {t("footer.webpor")} <a href="#" className="hover:underline">MG Web Studio</a>
         </span>
       </div>
     </footer>

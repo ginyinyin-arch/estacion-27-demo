@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Clock, MapPin, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLang } from "@/contexts/LangContext";
 
 interface Horario {
   dia: string;
@@ -11,6 +12,7 @@ interface Horario {
 
 const Hours = () => {
   const [horarios, setHorarios] = useState<Horario[]>([]);
+  const { t } = useLang();
 
   useEffect(() => {
     const fetch = async () => {
@@ -18,9 +20,7 @@ const Hours = () => {
       if (data) setHorarios(data);
     };
     fetch();
-
-    const channel = supabase
-      .channel("horarios-public")
+    const channel = supabase.channel("horarios-public")
       .on("postgres_changes", { event: "*", schema: "public", table: "horarios" }, () => fetch())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -37,16 +37,16 @@ const Hours = () => {
     return (
       <>
         {allSame && lunesSabado[0] && !lunesSabado[0].cerrado ? (
-          <p>Lunes a Sábados: {lunesSabado[0].hora_apertura} a {lunesSabado[0].hora_cierre} hs</p>
+          <p>{t("hours.lunsab")}: {lunesSabado[0].hora_apertura} a {lunesSabado[0].hora_cierre} hs</p>
         ) : (
           lunesSabado.map((h) => (
             <p key={h.dia} className="capitalize">
-              {h.dia}: {h.cerrado ? "Cerrado" : `${h.hora_apertura} a ${h.hora_cierre} hs`}
+              {h.dia}: {h.cerrado ? t("hours.cerrado") : `${h.hora_apertura} a ${h.hora_cierre} hs`}
             </p>
           ))
         )}
         {domingo && (
-          <p>Domingos: {domingo.cerrado ? "Cerrado" : `${domingo.hora_apertura} a ${domingo.hora_cierre} hs`}</p>
+          <p>{t("hours.dom")}: {domingo.cerrado ? t("hours.cerrado") : `${domingo.hora_apertura} a ${domingo.hora_cierre} hs`}</p>
         )}
       </>
     );
@@ -58,30 +58,29 @@ const Hours = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
             <span className="w-12 h-px bg-ambar" />
-            <span className="label-amber">DÓNDE ESTAMOS</span>
+            <span className="label-amber">{t("hours.label")}</span>
             <span className="w-12 h-px bg-ambar" />
           </div>
           <h2 className="font-display font-bold text-crema" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)" }}>
-            En el centro de todo.
+            {t("hours.title")}
           </h2>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-10">
           <div className="space-y-6">
-            <InfoCard icon={<Clock size={24} className="text-ambar" />} title="Horarios">
+            <InfoCard icon={<Clock size={24} className="text-ambar" />} title={t("hours.horarios")}>
               {formatHorarios() || (
                 <>
-                  <p>Lunes a Sábados: 08:00 a 02:00 hs</p>
-                  <p>Domingos: 20:00 a 02:00 hs</p>
+                  <p>{t("hours.lunsab")}: 08:00 a 02:00 hs</p>
+                  <p>{t("hours.dom")}: 20:00 a 02:00 hs</p>
                 </>
               )}
             </InfoCard>
-            <InfoCard icon={<MapPin size={24} className="text-ambar" />} title="Dirección">
+            <InfoCard icon={<MapPin size={24} className="text-ambar" />} title={t("hours.direccion")}>
               <p>27 de Abril 366, Centro</p>
               <p>Córdoba, Argentina</p>
-              <p>A metros de la Torre Ángela</p>
             </InfoCard>
-            <InfoCard icon={<Phone size={24} className="text-ambar" />} title="Contacto">
+            <InfoCard icon={<Phone size={24} className="text-ambar" />} title={t("hours.contacto")}>
               <p>(0351) 425-1651</p>
               <a href="https://instagram.com/estacionveintisiete" target="_blank" rel="noopener noreferrer" className="text-ambar hover:underline">
                 @estacionveintisiete
@@ -90,14 +89,8 @@ const Hours = () => {
           </div>
 
           <div className="rounded overflow-hidden" style={{ border: "1px solid rgba(240,232,208,0.10)" }}>
-            <iframe
-              src="https://maps.google.com/maps?q=27+de+Abril+366+Córdoba+Argentina&output=embed"
-              width="100%"
-              height="320"
-              style={{ border: 0, display: "block", minHeight: 320 }}
-              loading="lazy"
-              title="Ubicación de Estación 27"
-            />
+            <iframe src="https://maps.google.com/maps?q=27+de+Abril+366+Córdoba+Argentina&output=embed"
+              width="100%" height="320" style={{ border: 0, display: "block", minHeight: 320 }} loading="lazy" title="Ubicación de Estación 27" />
           </div>
         </div>
       </div>
