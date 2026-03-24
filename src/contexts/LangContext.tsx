@@ -89,8 +89,6 @@ const translations: Record<string, Record<Lang, string>> = {
   "res.whatsapp": { es: "ESCRIBIR POR WHATSAPP →", en: "MESSAGE ON WHATSAPP →" },
   "res.llamarbtn": { es: "LLAMAR: (0351) 425-1651", en: "CALL: (0351) 425-1651" },
   "res.respuesta": { es: "Respondemos a la brevedad. Confirmación en menos de 2 horas.", en: "We respond promptly. Confirmation within 2 hours." },
-  "res.llamarbtn": { es: "LLAMAR: (0351) 425-1651", en: "CALL: (0351) 425-1651" },
-  "res.respuesta": { es: "Respondemos a la brevedad. Confirmación en menos de 2 horas.", en: "We respond promptly. Confirmation within 2 hours." },
 
   // WhatsApp button
   "wa.reservar": { es: "Reservar", en: "Book" },
