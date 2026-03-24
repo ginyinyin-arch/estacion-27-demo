@@ -168,9 +168,14 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
 
     if (plato) {
       await supabase.from("platos").update({ nombre, descripcion: descripcion || null, precio: Number(precio), imagen_url }).eq("id", plato.id);
+      // Trigger auto-translate
+      supabase.functions.invoke("auto-translate", { body: { table: "platos", id: plato.id, fields: { nombre, descripcion: descripcion || null } } });
       toast.success("Plato actualizado");
     } else {
-      await supabase.from("platos").insert({ categoria, nombre, descripcion: descripcion || null, precio: Number(precio), imagen_url, orden: maxOrden || 1 });
+      const { data: newPlato } = await supabase.from("platos").insert({ categoria, nombre, descripcion: descripcion || null, precio: Number(precio), imagen_url, orden: maxOrden || 1 }).select("id").single();
+      if (newPlato) {
+        supabase.functions.invoke("auto-translate", { body: { table: "platos", id: newPlato.id, fields: { nombre, descripcion: descripcion || null } } });
+      }
       toast.success("Plato agregado");
     }
     setSaving(false);
