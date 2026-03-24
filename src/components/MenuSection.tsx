@@ -85,15 +85,25 @@ const MenuSection = () => {
           <p className="font-body font-light text-[0.95rem] text-crema2 mt-3">{t("menu.subtitle")}</p>
         </div>
 
-        <div className="flex overflow-x-auto gap-1 mb-10 pb-2" style={{ scrollbarWidth: "none" }}>
-          {categorias.map((c) => (
-            <button key={c} onClick={() => setActive(c)}
-              className={`font-body font-medium text-[0.73rem] uppercase tracking-[0.18em] px-[18px] py-2.5 whitespace-nowrap transition-colors duration-200 border-b-2 ${
-                active === c ? "text-ambar border-ambar" : "text-gris border-transparent hover:text-crema"
-              }`}>
-              {t(`menu.tab.${c}`)}
-            </button>
-          ))}
+        <div className="relative mb-10">
+          <div
+            ref={tabsRef}
+            className="flex overflow-x-auto gap-1 pb-2 scroll-smooth"
+            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", msOverflowStyle: "none" }}
+          >
+            {categorias.map((c) => (
+              <button key={c} onClick={() => { setActive(c); scrollToTab(c); }}
+                data-tab={c}
+                className={`font-body font-medium text-[0.73rem] uppercase tracking-[0.18em] px-[18px] py-2.5 whitespace-nowrap transition-colors duration-200 border-b-2 ${
+                  active === c ? "text-ambar border-ambar" : "text-gris border-transparent hover:text-crema"
+                }`}>
+                {t(`menu.tab.${c}`)}
+              </button>
+            ))}
+          </div>
+          {/* Fade indicators for mobile scroll */}
+          <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-negro to-transparent pointer-events-none md:hidden" />
+          <div className="absolute left-0 top-0 bottom-2 w-8 bg-gradient-to-r from-negro to-transparent pointer-events-none md:hidden" />
         </div>
 
         <div key={active} className="animate-fade-in-up">
