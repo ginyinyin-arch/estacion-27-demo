@@ -75,7 +75,7 @@ const Reservations = () => {
       }
       msg += `\nEstado: ⏳ Pendiente de confirmación`;
 
-      const waUrl = `https://wa.me/${WHATSAPP_RESTAURANT}?text=${encodeURIComponent(msg)}`;
+      const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, "_blank");
 
       setSubmitted(true);
