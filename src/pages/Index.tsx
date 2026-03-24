@@ -35,9 +35,12 @@ const Index = () => {
     <>
       <Navbar />
       <ClosedBanner />
+      <PromoBanner />
       <Hero />
       <Divider />
+      <DailyMenu />
       <MenuSection />
+      <EventsSection />
       <Gallery />
       <About />
       <Hours />
