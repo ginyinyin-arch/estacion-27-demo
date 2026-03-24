@@ -77,6 +77,17 @@ const AdminConfiguracion = () => {
           <p className="text-[#f0e8d0] text-sm bg-[#111] border border-[#333] rounded px-3 py-2">{email}</p>
         </div>
 
+        <div className="space-y-2">
+          <label className="block text-sm text-[#999] mb-1">Número de WhatsApp para reservas</label>
+          <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)}
+            placeholder="+54 351 XXXXXXX"
+            className="w-full bg-[#111] border border-[#333] text-[#f0e8d0] rounded px-3 py-2 text-sm" />
+          <button type="button" onClick={handleSaveWhatsapp} disabled={savingWa}
+            className="w-full bg-[#C8860A] hover:bg-[#a06d08] text-white font-semibold py-2.5 rounded transition-colors disabled:opacity-50">
+            {savingWa ? "Guardando..." : "GUARDAR NÚMERO"}
+          </button>
+        </div>
+
         <form onSubmit={handleChangePassword} className="space-y-4">
           <h2 className="text-sm font-medium text-[#999]">Cambiar contraseña</h2>
           <div>

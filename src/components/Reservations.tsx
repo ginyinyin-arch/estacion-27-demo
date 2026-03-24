@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useLang } from "@/contexts/LangContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useWhatsappNumber } from "@/hooks/use-whatsapp-number";
 
 interface Evento {
   id: string;
@@ -8,8 +9,6 @@ interface Evento {
   nombre_en: string | null;
   fecha: string;
 }
-
-const WHATSAPP_RESTAURANT = "543515511843";
 
 const Reservations = () => {
   const [submitted, setSubmitted] = useState(false);
