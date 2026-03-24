@@ -65,6 +65,21 @@ const AdminLayout = () => {
               {item.label}
             </NavLink>
           ))}
+          <div className="mt-4 pt-4 border-t border-[#222]">
+            <NavLink
+              to="/admin/configuracion"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                  isActive
+                    ? "text-[#C8860A] bg-[#C8860A]/10"
+                    : "text-[#999] hover:text-[#f0e8d0] hover:bg-[#ffffff08]"
+                }`
+              }
+            >
+              <Settings size={18} />
+              Configuración
+            </NavLink>
+          </div>
         </nav>
         <button
           onClick={handleLogout}
