@@ -43,11 +43,13 @@ export type Database = {
           activo: boolean
           created_at: string
           descripcion: string | null
+          descripcion_en: string | null
           fecha: string
           hora_inicio: string
           id: string
           imagen_url: string | null
           nombre: string
+          nombre_en: string | null
           precio_entrada: number
           requiere_reserva: boolean
         }
@@ -55,11 +57,13 @@ export type Database = {
           activo?: boolean
           created_at?: string
           descripcion?: string | null
+          descripcion_en?: string | null
           fecha: string
           hora_inicio: string
           id?: string
           imagen_url?: string | null
           nombre: string
+          nombre_en?: string | null
           precio_entrada?: number
           requiere_reserva?: boolean
         }
@@ -67,11 +71,13 @@ export type Database = {
           activo?: boolean
           created_at?: string
           descripcion?: string | null
+          descripcion_en?: string | null
           fecha?: string
           hora_inicio?: string
           id?: string
           imagen_url?: string | null
           nombre?: string
+          nombre_en?: string | null
           precio_entrada?: number
           requiere_reserva?: boolean
         }
@@ -128,10 +134,13 @@ export type Database = {
           bebida_incluida: boolean
           created_at: string
           entrada: string | null
+          entrada_en: string | null
           fecha: string
           id: string
           plato_principal: string
+          plato_principal_en: string | null
           postre: string | null
+          postre_en: string | null
           precio: number
           valido_hasta_hora: string
         }
@@ -140,10 +149,13 @@ export type Database = {
           bebida_incluida?: boolean
           created_at?: string
           entrada?: string | null
+          entrada_en?: string | null
           fecha?: string
           id?: string
           plato_principal: string
+          plato_principal_en?: string | null
           postre?: string | null
+          postre_en?: string | null
           precio: number
           valido_hasta_hora?: string
         }
@@ -152,10 +164,13 @@ export type Database = {
           bebida_incluida?: boolean
           created_at?: string
           entrada?: string | null
+          entrada_en?: string | null
           fecha?: string
           id?: string
           plato_principal?: string
+          plato_principal_en?: string | null
           postre?: string | null
+          postre_en?: string | null
           precio?: number
           valido_hasta_hora?: string
         }
@@ -166,11 +181,13 @@ export type Database = {
           categoria: string
           created_at: string
           descripcion: string | null
+          descripcion_en: string | null
           disponible: boolean
           disponible_hasta: string | null
           id: string
           imagen_url: string | null
           nombre: string
+          nombre_en: string | null
           orden: number
           precio: number
         }
@@ -178,11 +195,13 @@ export type Database = {
           categoria: string
           created_at?: string
           descripcion?: string | null
+          descripcion_en?: string | null
           disponible?: boolean
           disponible_hasta?: string | null
           id?: string
           imagen_url?: string | null
           nombre: string
+          nombre_en?: string | null
           orden?: number
           precio: number
         }
@@ -190,11 +209,13 @@ export type Database = {
           categoria?: string
           created_at?: string
           descripcion?: string | null
+          descripcion_en?: string | null
           disponible?: boolean
           disponible_hasta?: string | null
           id?: string
           imagen_url?: string | null
           nombre?: string
+          nombre_en?: string | null
           orden?: number
           precio?: number
         }
