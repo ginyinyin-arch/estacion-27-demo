@@ -24,6 +24,7 @@ const AdminCarta = () => {
   const [creating, setCreating] = useState<string | null>(null);
   const [disabling, setDisabling] = useState<Plato | null>(null);
   const [deleting, setDeleting] = useState<Plato | null>(null);
+  const isMobile = useIsMobile();
 
   const fetchPlatos = async () => {
     const { data } = await supabase
@@ -60,52 +61,92 @@ const AdminCarta = () => {
               <Plus size={14} /> Agregar
             </button>
           </div>
-          <div className="space-y-2">
+          <div className={isMobile ? "space-y-3" : "space-y-2"}>
             {platosPorCategoria(cat).map((p) => (
-              <div
-                key={p.id}
-                className={`flex items-center justify-between p-3 rounded border transition-colors ${
-                  p.disponible
-                    ? "bg-[#1a1a1a] border-[#333]"
-                    : "bg-[#1a1a1a]/50 border-[#333]/50"
-                }`}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm font-medium ${p.disponible ? "text-[#f0e8d0]" : "text-[#666] line-through"}`}>
+              isMobile ? (
+                /* ── Mobile card ── */
+                <div
+                  key={p.id}
+                  className={`rounded-lg border p-4 ${
+                    p.disponible
+                      ? "bg-[#1a1a1a] border-[#333]"
+                      : "bg-[#1a1a1a]/50 border-[#333]/50"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <span className={`text-base font-medium ${p.disponible ? "text-[#f0e8d0]" : "text-[#666] line-through"}`}>
                       {p.nombre}
                     </span>
-                    {!p.disponible && (
-                      <span className="text-[0.6rem] px-1.5 py-0.5 bg-[#333] text-[#888] rounded">
-                        No disponible
-                        {p.disponible_hasta ? ` hasta ${p.disponible_hasta}` : ""}
+                    <span className="text-base text-[#C8860A] font-semibold whitespace-nowrap">
+                      {p.precio > 0 ? `$${p.precio.toLocaleString()}` : "—"}
+                    </span>
+                  </div>
+                  {!p.disponible && (
+                    <span className="inline-block text-[0.65rem] px-1.5 py-0.5 bg-[#333] text-[#888] rounded mb-1">
+                      No disponible{p.disponible_hasta ? ` hasta ${p.disponible_hasta}` : ""}
+                    </span>
+                  )}
+                  {p.descripcion && (
+                    <p className="text-xs text-[#888] mt-1 mb-3 leading-relaxed">{p.descripcion}</p>
+                  )}
+                  <div className="flex gap-2 mt-3">
+                    <button onClick={() => setDisabling(p)} className="flex-1 flex items-center justify-center gap-1.5 min-h-[44px] rounded border border-[#333] text-xs text-[#999] hover:text-[#C8860A] hover:border-[#C8860A]/40 transition-colors">
+                      <Ban size={14} /> {p.disponible ? "Deshabilitar" : "Habilitar"}
+                    </button>
+                    <button onClick={() => setEditing(p)} className="flex-1 flex items-center justify-center gap-1.5 min-h-[44px] rounded border border-[#333] text-xs text-[#999] hover:text-[#C8860A] hover:border-[#C8860A]/40 transition-colors">
+                      <Pencil size={14} /> Editar
+                    </button>
+                    <button onClick={() => setDeleting(p)} className="flex-1 flex items-center justify-center gap-1.5 min-h-[44px] rounded border border-[#333] text-xs text-red-400/70 hover:text-red-400 hover:border-red-400/40 transition-colors">
+                      <Trash2 size={14} /> Eliminar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* ── Desktop row ── */
+                <div
+                  key={p.id}
+                  className={`flex items-center justify-between p-3 rounded border transition-colors ${
+                    p.disponible
+                      ? "bg-[#1a1a1a] border-[#333]"
+                      : "bg-[#1a1a1a]/50 border-[#333]/50"
+                  }`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-medium ${p.disponible ? "text-[#f0e8d0]" : "text-[#666] line-through"}`}>
+                        {p.nombre}
                       </span>
+                      {!p.disponible && (
+                        <span className="text-[0.6rem] px-1.5 py-0.5 bg-[#333] text-[#888] rounded">
+                          No disponible
+                          {p.disponible_hasta ? ` hasta ${p.disponible_hasta}` : ""}
+                        </span>
+                      )}
+                    </div>
+                    {p.descripcion && (
+                      <p className="text-xs text-[#888] mt-0.5 truncate">{p.descripcion}</p>
                     )}
                   </div>
-                  {p.descripcion && (
-                    <p className="text-xs text-[#888] mt-0.5 truncate">{p.descripcion}</p>
-                  )}
+                  <div className="flex items-center gap-2 ml-4 shrink-0">
+                    <span className="text-sm text-[#C8860A] font-medium">
+                      {p.precio > 0 ? `$${p.precio.toLocaleString()}` : "—"}
+                    </span>
+                    <button onClick={() => setDisabling(p)} title={p.disponible ? "Deshabilitar" : "Habilitar"} className="p-1.5 text-[#888] hover:text-[#C8860A] transition-colors">
+                      <Ban size={14} />
+                    </button>
+                    <button onClick={() => setEditing(p)} className="p-1.5 text-[#888] hover:text-[#C8860A] transition-colors">
+                      <Pencil size={14} />
+                    </button>
+                    <button onClick={() => setDeleting(p)} className="p-1.5 text-[#888] hover:text-red-400 transition-colors">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 ml-4 shrink-0">
-                  <span className="text-sm text-[#C8860A] font-medium">
-                    {p.precio > 0 ? `$${p.precio.toLocaleString()}` : "—"}
-                  </span>
-                  <button onClick={() => setDisabling(p)} title={p.disponible ? "Deshabilitar" : "Habilitar"} className="p-1.5 text-[#888] hover:text-[#C8860A] transition-colors">
-                    <Ban size={14} />
-                  </button>
-                  <button onClick={() => setEditing(p)} className="p-1.5 text-[#888] hover:text-[#C8860A] transition-colors">
-                    <Pencil size={14} />
-                  </button>
-                  <button onClick={() => setDeleting(p)} className="p-1.5 text-[#888] hover:text-red-400 transition-colors">
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
+              )
             ))}
           </div>
         </div>
       ))}
-
       {/* Edit/Create modal */}
       {(editing || creating) && (
         <PlatoForm
