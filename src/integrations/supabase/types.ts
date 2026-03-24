@@ -14,7 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      estado_local: {
+        Row: {
+          abierto: boolean
+          fecha_vuelta: string | null
+          id: string
+          motivo_cierre: string | null
+          updated_at: string
+        }
+        Insert: {
+          abierto?: boolean
+          fecha_vuelta?: string | null
+          id?: string
+          motivo_cierre?: string | null
+          updated_at?: string
+        }
+        Update: {
+          abierto?: boolean
+          fecha_vuelta?: string | null
+          id?: string
+          motivo_cierre?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      galeria: {
+        Row: {
+          created_at: string
+          id: string
+          imagen_url: string
+          orden: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          imagen_url: string
+          orden?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          imagen_url?: string
+          orden?: number
+        }
+        Relationships: []
+      }
+      horarios: {
+        Row: {
+          cerrado: boolean
+          dia: string
+          hora_apertura: string
+          hora_cierre: string
+          id: string
+        }
+        Insert: {
+          cerrado?: boolean
+          dia: string
+          hora_apertura?: string
+          hora_cierre?: string
+          id?: string
+        }
+        Update: {
+          cerrado?: boolean
+          dia?: string
+          hora_apertura?: string
+          hora_cierre?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      platos: {
+        Row: {
+          categoria: string
+          created_at: string
+          descripcion: string | null
+          disponible: boolean
+          disponible_hasta: string | null
+          id: string
+          imagen_url: string | null
+          nombre: string
+          orden: number
+          precio: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          descripcion?: string | null
+          disponible?: boolean
+          disponible_hasta?: string | null
+          id?: string
+          imagen_url?: string | null
+          nombre: string
+          orden?: number
+          precio: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          disponible?: boolean
+          disponible_hasta?: string | null
+          id?: string
+          imagen_url?: string | null
+          nombre?: string
+          orden?: number
+          precio?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
