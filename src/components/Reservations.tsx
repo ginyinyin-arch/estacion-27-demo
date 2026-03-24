@@ -17,8 +17,22 @@ const Reservations = () => {
   const { t, lang } = useLang();
   const waNumber = useWhatsappNumber();
 
+  const countries = [
+    { code: "AR", flag: "🇦🇷", name: "Argentina", prefix: "+54" },
+    { code: "BR", flag: "🇧🇷", name: "Brasil", prefix: "+55" },
+    { code: "CL", flag: "🇨🇱", name: "Chile", prefix: "+56" },
+    { code: "UY", flag: "🇺🇾", name: "Uruguay", prefix: "+598" },
+    { code: "PY", flag: "🇵🇾", name: "Paraguay", prefix: "+595" },
+    { code: "ES", flag: "🇪🇸", name: "España", prefix: "+34" },
+    { code: "US", flag: "🇺🇸", name: "Estados Unidos", prefix: "+1" },
+    { code: "MX", flag: "🇲🇽", name: "México", prefix: "+52" },
+    { code: "CO", flag: "🇨🇴", name: "Colombia", prefix: "+57" },
+    { code: "PE", flag: "🇵🇪", name: "Perú", prefix: "+51" },
+  ];
+
   const [nombre, setNombre] = useState("");
-  const [telefono, setTelefono] = useState("");
+  const [countryCode, setCountryCode] = useState("AR");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [fecha, setFecha] = useState("");
   const [hora, setHora] = useState("");
