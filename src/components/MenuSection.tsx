@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Wine } from "lucide-react";
+import { Wine, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
+import PriceAlertModal from "./PriceAlertModal";
 
 interface Plato {
   id: string;
@@ -60,6 +61,8 @@ const MenuSection = () => {
       .subscribe();
     return () => { supabase.removeChannel(ch1); supabase.removeChannel(ch2); };
   }, []);
+
+  const [alertPlatoId, setAlertPlatoId] = useState<string | null>(null);
 
   const activePlatos = platos.filter((p) => p.categoria === active);
   const image = categoryImages[active];
@@ -166,6 +169,15 @@ const MenuSection = () => {
                         ) : (
                           <span className="font-body font-medium text-[0.92rem] text-ambar">${d.precio.toLocaleString()}</span>
                         )}
+                        {d.disponible && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setAlertPlatoId(d.id); }}
+                            className="flex items-center gap-1 mt-1 font-body text-[0.68rem] text-crema2 hover:text-ambar transition-colors"
+                          >
+                            <Bell size={10} />
+                            {t("alert.btn")}
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -174,6 +186,14 @@ const MenuSection = () => {
             </>
           )}
         </div>
+
+        {alertPlatoId && (
+          <PriceAlertModal
+            platos={platos}
+            initialPlatoId={alertPlatoId}
+            onClose={() => setAlertPlatoId(null)}
+          />
+        )}
       </div>
     </section>
   );

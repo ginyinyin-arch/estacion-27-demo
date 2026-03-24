@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      alertas_precio: {
+        Row: {
+          activa: boolean
+          canal: string
+          contacto: string
+          created_at: string
+          id: string
+          plato_id: string
+        }
+        Insert: {
+          activa?: boolean
+          canal: string
+          contacto: string
+          created_at?: string
+          id?: string
+          plato_id: string
+        }
+        Update: {
+          activa?: boolean
+          canal?: string
+          contacto?: string
+          created_at?: string
+          id?: string
+          plato_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_precio_plato_id_fkey"
+            columns: ["plato_id"]
+            isOneToOne: false
+            referencedRelation: "platos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       estado_local: {
         Row: {
           abierto: boolean
