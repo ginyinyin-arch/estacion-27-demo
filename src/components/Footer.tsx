@@ -59,9 +59,20 @@ const Footer = () => {
         <span className="font-body font-light text-[0.74rem]" style={{ color: "rgba(240,232,208,0.30)" }}>
           © 2026 Estación 27 · Córdoba, Argentina
         </span>
-        <span className="font-body font-light text-[0.74rem]" style={{ color: "rgba(240,232,208,0.30)" }}>
-          {t("footer.webpor")} <a href="#" className="hover:underline">MG Web Studio</a>
-        </span>
+      </div>
+
+      <div className="text-center pt-8 pb-2">
+        <a
+          href="https://mgwebstudio.link"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-body font-light text-[0.875rem] transition-all duration-200 hover:underline hover:underline-offset-4"
+          style={{ color: "rgba(200,134,10,0.7)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(200,134,10,1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(200,134,10,0.7)")}
+        >
+          Sitio creado por MG Web Studio
+        </a>
       </div>
     </footer>
   );
