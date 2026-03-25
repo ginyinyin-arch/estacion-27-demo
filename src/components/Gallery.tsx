@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const images = [
+const fallbackImages = [
   "/images/lomo.jpg",
   "/images/salmon2.jpg",
   "/images/costeleta.jpg",
@@ -14,6 +15,7 @@ const images = [
 ];
 
 const Gallery = () => {
+  const [images, setImages] = useState<string[]>(fallbackImages);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [expanded, setExpanded] = useState(false);
   const isMobile = useIsMobile();
@@ -21,9 +23,28 @@ const Gallery = () => {
     if (node) (Gallery as any)._sectionRef = node;
   }, []);
 
+  const fetchGallery = useCallback(async () => {
+    const { data } = await supabase
+      .from("galeria")
+      .select("imagen_url")
+      .order("orden", { ascending: true });
+    if (data && data.length > 0) {
+      setImages(data.map((item) => item.imagen_url));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchGallery();
+    const channel = supabase
+      .channel("galeria-public")
+      .on("postgres_changes", { event: "*", schema: "public", table: "galeria" }, () => fetchGallery())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchGallery]);
+
   const close = useCallback(() => setLightbox(null), []);
-  const prev = useCallback(() => setLightbox((i) => (i !== null ? (i - 1 + images.length) % images.length : null)), []);
-  const next = useCallback(() => setLightbox((i) => (i !== null ? (i + 1) % images.length : null)), []);
+  const prev = useCallback(() => setLightbox((i) => (i !== null ? (i - 1 + images.length) % images.length : null)), [images.length]);
+  const next = useCallback(() => setLightbox((i) => (i !== null ? (i + 1) % images.length : null)), [images.length]);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -78,7 +99,6 @@ const Gallery = () => {
                   </div>
                 ))}
 
-                {/* Instagram CTA - hidden on mobile when collapsed */}
                 {(!isMobile || expanded) && (
                   <a
                     href="https://www.instagram.com/estacionveintisiete"
@@ -92,7 +112,6 @@ const Gallery = () => {
                 )}
               </div>
 
-              {/* Mobile toggle button */}
               {isMobile && (
                 <button
                   onClick={() => {
@@ -116,7 +135,6 @@ const Gallery = () => {
         })()}
       </div>
 
-      {/* Lightbox */}
       {lightbox !== null && (
         <div
           className="fixed inset-0 z-[2000] flex items-center justify-center"
