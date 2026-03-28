@@ -113,15 +113,15 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
     if (!canSubmit) return;
 
     setSaving(true);
-    const rows: { plato_id: string; canal: string; contacto: string }[] = [];
+    const rows: { plato_id: string; canal: string; contacto: string; email?: string; whatsapp?: string }[] = [];
     const platoIds = Array.from(selected);
     if (emailChecked) {
-      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: email.trim() }));
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: email.trim(), email: email.trim() }));
     }
     if (whatsappChecked) {
-      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: phone.trim() }));
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: phone.trim(), whatsapp: phone.trim() }));
     }
-    await supabase.from("alertas_precio").insert(rows);
+    await supabase.from("alertas_precio").insert(rows as any);
     setSaving(false);
     setDone(true);
   };
