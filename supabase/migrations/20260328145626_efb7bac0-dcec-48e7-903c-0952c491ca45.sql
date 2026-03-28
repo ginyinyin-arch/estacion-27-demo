@@ -1,0 +1,1 @@
+ALTER TABLE public.alertas_precio ADD COLUMN IF NOT EXISTS email text, ADD COLUMN IF NOT EXISTS whatsapp text;
