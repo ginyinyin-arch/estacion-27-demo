@@ -20,24 +20,30 @@ export type Database = {
           canal: string
           contacto: string
           created_at: string
+          email: string | null
           id: string
           plato_id: string
+          whatsapp: string | null
         }
         Insert: {
           activa?: boolean
           canal: string
           contacto: string
           created_at?: string
+          email?: string | null
           id?: string
           plato_id: string
+          whatsapp?: string | null
         }
         Update: {
           activa?: boolean
           canal?: string
           contacto?: string
           created_at?: string
+          email?: string | null
           id?: string
           plato_id?: string
+          whatsapp?: string | null
         }
         Relationships: [
           {
