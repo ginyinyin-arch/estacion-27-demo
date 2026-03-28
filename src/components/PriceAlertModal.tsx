@@ -221,39 +221,67 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
         <p className="font-body text-xs text-crema2 uppercase tracking-wider mb-3">
           {t("alert.how")}
         </p>
-        <div className="flex gap-3 mb-3">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="canal"
-              checked={canal === "email"}
-              onChange={() => setCanal("email")}
-              className="accent-[#C8860A]"
-            />
-            <span className="font-body text-sm text-crema">Email</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="canal"
-              checked={canal === "whatsapp"}
-              onChange={() => setCanal("whatsapp")}
-              className="accent-[#C8860A]"
-            />
-            <span className="font-body text-sm text-crema">WhatsApp</span>
-          </label>
+        <div className="space-y-3 mb-5">
+          {/* Email option */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={emailChecked}
+                onChange={() => { setEmailChecked(!emailChecked); setErrors((e) => ({ ...e, email: undefined })); }}
+                className="accent-[#C8860A] w-4 h-4"
+              />
+              <span className="font-body text-sm text-crema">
+                {lang === "en" ? "Notify me by Email" : "Avisarme por Email"}
+              </span>
+            </label>
+            <div
+              className="overflow-hidden transition-all duration-300 ease-in-out"
+              style={{ maxHeight: emailChecked ? "80px" : "0", opacity: emailChecked ? 1 : 0 }}
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setErrors((er) => ({ ...er, email: undefined })); }}
+                placeholder="tu@email.com"
+                className="w-full mt-2 px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors"
+              />
+              {errors.email && <p className="text-red-400 text-xs mt-1 font-body">{errors.email}</p>}
+            </div>
+          </div>
+
+          {/* WhatsApp option */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={whatsappChecked}
+                onChange={() => { setWhatsappChecked(!whatsappChecked); setErrors((e) => ({ ...e, phone: undefined })); }}
+                className="accent-[#C8860A] w-4 h-4"
+              />
+              <span className="font-body text-sm text-crema">
+                {lang === "en" ? "Notify me by WhatsApp" : "Avisarme por WhatsApp"}
+              </span>
+            </label>
+            <div
+              className="overflow-hidden transition-all duration-300 ease-in-out"
+              style={{ maxHeight: whatsappChecked ? "80px" : "0", opacity: whatsappChecked ? 1 : 0 }}
+            >
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => { setPhone(e.target.value); setErrors((er) => ({ ...er, phone: undefined })); }}
+                placeholder="+54 9 351 ..."
+                className="w-full mt-2 px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors"
+              />
+              {errors.phone && <p className="text-red-400 text-xs mt-1 font-body">{errors.phone}</p>}
+            </div>
+          </div>
         </div>
-        <input
-          type={canal === "email" ? "email" : "tel"}
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-          placeholder={canal === "email" ? "tu@email.com" : "+54 9 351 ..."}
-          className="w-full px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors mb-5"
-        />
 
         <button
           onClick={handleSubmit}
-          disabled={saving || selected.size === 0 || !contacto.trim()}
+          disabled={saving || !canSubmit}
           className="w-full py-3 rounded bg-ambar text-negro font-body font-bold text-sm uppercase tracking-wider hover:bg-ambar/90 disabled:opacity-40 transition-colors"
         >
           {saving ? "..." : t("alert.activate")}
