@@ -106,13 +106,21 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   };
 
   const handleSubmit = async () => {
-    if (selected.size === 0 || !contacto.trim()) return;
+    const newErrors: { email?: string; phone?: string } = {};
+    if (emailChecked && !isValidEmail(email)) newErrors.email = "Email inválido";
+    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = "Mínimo 10 dígitos";
+    if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
+    if (!canSubmit) return;
+
     setSaving(true);
-    const rows = Array.from(selected).map((plato_id) => ({
-      plato_id,
-      canal,
-      contacto: contacto.trim(),
-    }));
+    const rows: { plato_id: string; canal: string; contacto: string }[] = [];
+    const platoIds = Array.from(selected);
+    if (emailChecked) {
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: email.trim() }));
+    }
+    if (whatsappChecked) {
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: phone.trim() }));
+    }
     await supabase.from("alertas_precio").insert(rows);
     setSaving(false);
     setDone(true);
