@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
@@ -18,6 +18,30 @@ interface PriceAlertModalProps {
   onClose: () => void;
 }
 
+const CategoryCheckbox = ({
+  checked,
+  indeterminate,
+  onChange,
+}: {
+  checked: boolean;
+  indeterminate: boolean;
+  onChange: () => void;
+}) => {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className="accent-[#C8860A] w-4 h-4"
+    />
+  );
+};
+
 const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalProps) => {
   const { lang, t } = useLang();
   const [selected, setSelected] = useState<Set<string>>(new Set([initialPlatoId]));
@@ -27,6 +51,11 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const [done, setDone] = useState(false);
 
   const availablePlatos = platos.filter((p) => p.disponible && p.precio > 0);
+
+  // Group by category
+  const categories = Array.from(new Set(availablePlatos.map((p) => p.categoria)));
+  const platosByCategory = (cat: string) => availablePlatos.filter((p) => p.categoria === cat);
+
   const allSelected = availablePlatos.length > 0 && availablePlatos.every((p) => selected.has(p.id));
 
   const toggleAll = () => {
@@ -37,6 +66,18 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
     }
   };
 
+  const toggleCategory = (cat: string) => {
+    const ids = platosByCategory(cat).map((p) => p.id);
+    const allChecked = ids.every((id) => selected.has(id));
+    const next = new Set(selected);
+    if (allChecked) {
+      ids.forEach((id) => next.delete(id));
+    } else {
+      ids.forEach((id) => next.add(id));
+    }
+    setSelected(next);
+  };
+
   const toggle = (id: string) => {
     const next = new Set(selected);
     if (next.has(id)) next.delete(id);
@@ -45,6 +86,14 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   };
 
   const getName = (p: Plato) => (lang === "en" && p.nombre_en) ? p.nombre_en : p.nombre;
+
+  const getCategoryState = (cat: string) => {
+    const ids = platosByCategory(cat).map((p) => p.id);
+    const checkedCount = ids.filter((id) => selected.has(id)).length;
+    if (checkedCount === 0) return "none";
+    if (checkedCount === ids.length) return "all";
+    return "some";
+  };
 
   const handleSubmit = async () => {
     if (selected.size === 0 || !contacto.trim()) return;
@@ -96,7 +145,7 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
         </div>
 
         {/* Select all */}
-        <label className="flex items-center gap-2 mb-3 cursor-pointer group">
+        <label className="flex items-center gap-2 mb-4 cursor-pointer group">
           <input
             type="checkbox"
             checked={allSelected}
@@ -108,25 +157,46 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
           </span>
         </label>
 
-        {/* Platos list */}
-        <div className="space-y-1 max-h-[240px] overflow-y-auto mb-5 pr-1">
-          {availablePlatos.map((p) => (
-            <label
-              key={p.id}
-              className="flex items-center justify-between gap-2 p-2 rounded cursor-pointer hover:bg-crema/5 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={selected.has(p.id)}
-                  onChange={() => toggle(p.id)}
-                  className="accent-[#C8860A] w-4 h-4"
-                />
-                <span className="font-body text-sm text-crema">{getName(p)}</span>
+        {/* Platos grouped by category */}
+        <div className="space-y-4 max-h-[240px] overflow-y-auto mb-5 pr-1">
+          {categories.map((cat) => {
+            const state = getCategoryState(cat);
+            return (
+              <div key={cat}>
+                {/* Category header */}
+                <label className="flex items-center gap-2 cursor-pointer group mb-1.5">
+                  <CategoryCheckbox
+                    checked={state === "all"}
+                    indeterminate={state === "some"}
+                    onChange={() => toggleCategory(cat)}
+                  />
+                  <span className="font-body text-xs font-semibold text-ambar uppercase tracking-wider group-hover:text-ambar/80 transition-colors">
+                    {cat}
+                  </span>
+                </label>
+                {/* Platos in category */}
+                <div className="space-y-0.5 ml-6">
+                  {platosByCategory(cat).map((p) => (
+                    <label
+                      key={p.id}
+                      className="flex items-center justify-between gap-2 p-1.5 rounded cursor-pointer hover:bg-crema/5 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selected.has(p.id)}
+                          onChange={() => toggle(p.id)}
+                          className="accent-[#C8860A] w-4 h-4"
+                        />
+                        <span className="font-body text-sm text-crema">{getName(p)}</span>
+                      </div>
+                      <span className="font-body text-xs text-ambar">${p.precio.toLocaleString()}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-              <span className="font-body text-xs text-ambar">${p.precio.toLocaleString()}</span>
-            </label>
-          ))}
+            );
+          })}
         </div>
 
         {/* Contact method */}
