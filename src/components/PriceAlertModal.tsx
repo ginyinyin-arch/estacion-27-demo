@@ -45,10 +45,20 @@ const CategoryCheckbox = ({
 const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalProps) => {
   const { lang, t } = useLang();
   const [selected, setSelected] = useState<Set<string>>(new Set([initialPlatoId]));
-  const [canal, setCanal] = useState<"email" | "whatsapp">("email");
-  const [contacto, setContacto] = useState("");
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [whatsappChecked, setWhatsappChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+  const isValidPhone = (v: string) => v.replace(/\D/g, "").length >= 10;
+
+  const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
+    (!emailChecked || (email.trim() && isValidEmail(email))) &&
+    (!whatsappChecked || (phone.trim() && isValidPhone(phone)));
 
   const availablePlatos = platos.filter((p) => p.disponible && p.precio > 0);
 
@@ -96,13 +106,21 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   };
 
   const handleSubmit = async () => {
-    if (selected.size === 0 || !contacto.trim()) return;
+    const newErrors: { email?: string; phone?: string } = {};
+    if (emailChecked && !isValidEmail(email)) newErrors.email = "Email inválido";
+    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = "Mínimo 10 dígitos";
+    if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
+    if (!canSubmit) return;
+
     setSaving(true);
-    const rows = Array.from(selected).map((plato_id) => ({
-      plato_id,
-      canal,
-      contacto: contacto.trim(),
-    }));
+    const rows: { plato_id: string; canal: string; contacto: string }[] = [];
+    const platoIds = Array.from(selected);
+    if (emailChecked) {
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: email.trim() }));
+    }
+    if (whatsappChecked) {
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: phone.trim() }));
+    }
     await supabase.from("alertas_precio").insert(rows);
     setSaving(false);
     setDone(true);
@@ -203,39 +221,67 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
         <p className="font-body text-xs text-crema2 uppercase tracking-wider mb-3">
           {t("alert.how")}
         </p>
-        <div className="flex gap-3 mb-3">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="canal"
-              checked={canal === "email"}
-              onChange={() => setCanal("email")}
-              className="accent-[#C8860A]"
-            />
-            <span className="font-body text-sm text-crema">Email</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="canal"
-              checked={canal === "whatsapp"}
-              onChange={() => setCanal("whatsapp")}
-              className="accent-[#C8860A]"
-            />
-            <span className="font-body text-sm text-crema">WhatsApp</span>
-          </label>
+        <div className="space-y-3 mb-5">
+          {/* Email option */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={emailChecked}
+                onChange={() => { setEmailChecked(!emailChecked); setErrors((e) => ({ ...e, email: undefined })); }}
+                className="accent-[#C8860A] w-4 h-4"
+              />
+              <span className="font-body text-sm text-crema">
+                {lang === "en" ? "Notify me by Email" : "Avisarme por Email"}
+              </span>
+            </label>
+            <div
+              className="overflow-hidden transition-all duration-300 ease-in-out"
+              style={{ maxHeight: emailChecked ? "80px" : "0", opacity: emailChecked ? 1 : 0 }}
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setErrors((er) => ({ ...er, email: undefined })); }}
+                placeholder="tu@email.com"
+                className="w-full mt-2 px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors"
+              />
+              {errors.email && <p className="text-red-400 text-xs mt-1 font-body">{errors.email}</p>}
+            </div>
+          </div>
+
+          {/* WhatsApp option */}
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={whatsappChecked}
+                onChange={() => { setWhatsappChecked(!whatsappChecked); setErrors((e) => ({ ...e, phone: undefined })); }}
+                className="accent-[#C8860A] w-4 h-4"
+              />
+              <span className="font-body text-sm text-crema">
+                {lang === "en" ? "Notify me by WhatsApp" : "Avisarme por WhatsApp"}
+              </span>
+            </label>
+            <div
+              className="overflow-hidden transition-all duration-300 ease-in-out"
+              style={{ maxHeight: whatsappChecked ? "80px" : "0", opacity: whatsappChecked ? 1 : 0 }}
+            >
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => { setPhone(e.target.value); setErrors((er) => ({ ...er, phone: undefined })); }}
+                placeholder="+54 9 351 ..."
+                className="w-full mt-2 px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors"
+              />
+              {errors.phone && <p className="text-red-400 text-xs mt-1 font-body">{errors.phone}</p>}
+            </div>
+          </div>
         </div>
-        <input
-          type={canal === "email" ? "email" : "tel"}
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-          placeholder={canal === "email" ? "tu@email.com" : "+54 9 351 ..."}
-          className="w-full px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors mb-5"
-        />
 
         <button
           onClick={handleSubmit}
-          disabled={saving || selected.size === 0 || !contacto.trim()}
+          disabled={saving || !canSubmit}
           className="w-full py-3 rounded bg-ambar text-negro font-body font-bold text-sm uppercase tracking-wider hover:bg-ambar/90 disabled:opacity-40 transition-colors"
         >
           {saving ? "..." : t("alert.activate")}
