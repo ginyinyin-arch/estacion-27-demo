@@ -56,6 +56,18 @@ const AdminPromociones = () => {
         valor_descuento: Number(valorDescuento), mensaje: mensaje || null,
         activa: true, expira_en: expira,
       });
+
+      // Notify subscribers
+      supabase.functions.invoke("notificar-promo-activa", {
+        body: {
+          plato_id: platoId,
+          tipo_descuento: tipoDescuento,
+          valor_descuento: Number(valorDescuento),
+          mensaje: mensaje || null,
+          fecha_fin: expira,
+        },
+      }).catch((e) => console.error("Error notificando:", e));
+
       toast({ title: "Promoción activada" });
       setPlatoId(""); setValorDescuento(""); setMensaje(""); setDuracion("24");
     } catch { toast({ title: "Error", variant: "destructive" }); }
