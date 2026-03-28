@@ -45,10 +45,20 @@ const CategoryCheckbox = ({
 const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalProps) => {
   const { lang, t } = useLang();
   const [selected, setSelected] = useState<Set<string>>(new Set([initialPlatoId]));
-  const [canal, setCanal] = useState<"email" | "whatsapp">("email");
-  const [contacto, setContacto] = useState("");
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [whatsappChecked, setWhatsappChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+  const isValidPhone = (v: string) => v.replace(/\D/g, "").length >= 10;
+
+  const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
+    (!emailChecked || (email.trim() && isValidEmail(email))) &&
+    (!whatsappChecked || (phone.trim() && isValidPhone(phone)));
 
   const availablePlatos = platos.filter((p) => p.disponible && p.precio > 0);
 
