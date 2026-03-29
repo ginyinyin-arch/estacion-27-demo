@@ -39,6 +39,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "menu.badge.especialidad": { es: "ESPECIALIDAD", en: "HOUSE SPECIAL" },
   "menu.badge.oferta": { es: "OFERTA", en: "SPECIAL OFFER" },
   "menu.badge.nodisponible": { es: "No disponible", en: "Not available" },
+  "menu.badge.agotado": { es: "Agotado por hoy", en: "Sold out today" },
   "menu.bar.title": { es: "Gin, Vermouth & Coctelería", en: "Gin, Vermouth & Cocktails" },
   "menu.bar.desc": { es: "Carta de tragos, gin tonic de autor, vermouths clásicos y cocteles de la casa. Preguntanos en el salón.", en: "Drinks menu, craft gin & tonic, classic vermouths and house cocktails. Ask us at the bar." },
   "menu.lomo.subtitle": { es: "EL LOMO ESTACIÓN — Nuestra especialidad.", en: "EL LOMO ESTACIÓN — Our specialty." },
