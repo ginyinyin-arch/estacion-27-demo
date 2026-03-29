@@ -283,6 +283,9 @@ export type Database = {
       promociones: {
         Row: {
           activa: boolean
+          agotar_al_terminar: boolean
+          cantidad: number | null
+          cantidad_restante: number | null
           created_at: string
           expira_en: string
           id: string
@@ -293,6 +296,9 @@ export type Database = {
         }
         Insert: {
           activa?: boolean
+          agotar_al_terminar?: boolean
+          cantidad?: number | null
+          cantidad_restante?: number | null
           created_at?: string
           expira_en: string
           id?: string
@@ -303,6 +309,9 @@ export type Database = {
         }
         Update: {
           activa?: boolean
+          agotar_al_terminar?: boolean
+          cantidad?: number | null
+          cantidad_restante?: number | null
           created_at?: string
           expira_en?: string
           id?: string

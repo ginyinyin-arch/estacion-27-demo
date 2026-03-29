@@ -9,6 +9,7 @@ interface Plato { id: string; nombre: string; categoria: string; precio: number;
 interface Promo {
   id: string; plato_id: string; tipo_descuento: string; valor_descuento: number;
   mensaje: string | null; activa: boolean; expira_en: string; created_at: string;
+  cantidad: number | null; cantidad_restante: number | null; agotar_al_terminar: boolean;
 }
 
 const AdminPromociones = () => {
@@ -21,6 +22,8 @@ const AdminPromociones = () => {
   const [duracion, setDuracion] = useState("24");
   const [unidadDuracion, setUnidadDuracion] = useState("horas");
   const [mensaje, setMensaje] = useState("");
+  const [cantidad, setCantidad] = useState("");
+  const [agotarAlTerminar, setAgotarAlTerminar] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
@@ -51,10 +54,13 @@ const AdminPromociones = () => {
     try {
       const durMs = Number(duracion) * (unidadDuracion === "horas" ? 3600000 : 86400000);
       const expira = new Date(Date.now() + durMs).toISOString();
+      const cantidadNum = cantidad ? Number(cantidad) : null;
       await supabase.from("promociones").insert({
         plato_id: platoId, tipo_descuento: tipoDescuento,
         valor_descuento: Number(valorDescuento), mensaje: mensaje || null,
         activa: true, expira_en: expira,
+        cantidad: cantidadNum, cantidad_restante: cantidadNum,
+        agotar_al_terminar: agotarAlTerminar,
       });
 
       // Notify subscribers
@@ -69,7 +75,7 @@ const AdminPromociones = () => {
       }).catch((e) => console.error("Error notificando:", e));
 
       toast({ title: "Promoción activada" });
-      setPlatoId(""); setValorDescuento(""); setMensaje(""); setDuracion("24");
+      setPlatoId(""); setValorDescuento(""); setMensaje(""); setDuracion("24"); setCantidad(""); setAgotarAlTerminar(false);
     } catch { toast({ title: "Error", variant: "destructive" }); }
     setLoading(false);
   };
@@ -95,6 +101,12 @@ const AdminPromociones = () => {
                   <p className="text-[#999] text-sm">
                     {promo.tipo_descuento === "porcentaje" ? `${promo.valor_descuento}% OFF` : `$${promo.valor_descuento} OFF`}
                     {promo.mensaje && ` — ${promo.mensaje}`}
+                    {promo.cantidad !== null && (
+                      <span className="ml-2 text-[#C8860A]">
+                        · {promo.cantidad_restante}/{promo.cantidad} uds
+                        {promo.agotar_al_terminar && " (agota)"}
+                      </span>
+                    )}
                   </p>
                   <p className="text-[#666] text-xs mt-1">
                     Expira: {new Date(promo.expira_en).toLocaleString("es-AR")}
@@ -173,6 +185,23 @@ const AdminPromociones = () => {
           <input type="text" value={mensaje} onChange={e => setMensaje(e.target.value)}
             className="w-full bg-[#111] border border-[#333] text-[#f0e8d0] rounded px-3 py-2 text-sm"
             placeholder="Semana del Lomo, Happy Hour..." />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-[#999] mb-1">Cantidad (opcional)</label>
+            <input type="number" min="1" value={cantidad} onChange={e => setCantidad(e.target.value)}
+              className="w-full bg-[#111] border border-[#333] text-[#f0e8d0] rounded px-3 py-2 text-sm"
+              placeholder="Ej: 15" />
+            <p className="text-[#666] text-xs mt-1">Si se deja vacío, la cantidad será indeterminada</p>
+          </div>
+          <div className="flex items-center pt-5">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-[#999]">
+              <input type="checkbox" checked={agotarAlTerminar} onChange={e => setAgotarAlTerminar(e.target.checked)}
+                className="w-4 h-4 rounded border-[#333] bg-[#111] accent-[#C8860A]" />
+              Marcar como agotado al acabar existencias
+            </label>
+          </div>
         </div>
 
         <button onClick={activarPromo} disabled={loading}
