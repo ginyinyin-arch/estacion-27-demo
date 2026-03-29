@@ -176,7 +176,9 @@ const MenuSection = () => {
                         </span>
                         {agotado && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-gris border border-gris/40 px-1.5 py-0.5 rounded-sm">
-                            Agotado por hoy
+                            {t("menu.badge.agotado")}
+                          </span>
+                        )}
                           </span>
                         )}
                         {!d.disponible && !agotado && (
