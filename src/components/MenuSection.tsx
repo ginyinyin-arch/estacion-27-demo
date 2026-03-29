@@ -157,28 +157,40 @@ const MenuSection = () => {
                 </div>
               )}
               <div className="grid md:grid-cols-2 gap-4">
-                {activePlatos.map((d) => (
+                {activePlatos.map((d) => {
+                  const promo = getPromo(d.id);
+                  const agotado = isAgotado(d.id);
+                  const promoActiva = promo && !agotado && d.disponible;
+                  const itemDisabled = !d.disponible || agotado;
+
+                  return (
                   <div key={d.id}
-                    className={`bg-carbon border rounded p-5 flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 ${!d.disponible ? "opacity-60" : ""}`}
+                    className={`bg-carbon border rounded p-5 flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 ${itemDisabled ? "opacity-50 grayscale" : ""}`}
                     style={{ borderColor: "rgba(240,232,208,0.06)" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; }}
+                    onMouseEnter={(e) => { if (!itemDisabled) { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; } }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)"; e.currentTarget.style.boxShadow = "none"; }}>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-display font-semibold text-[1.05rem] text-crema ${!d.disponible ? "line-through" : ""}`}>
+                        <span className={`font-display font-semibold text-[1.05rem] ${agotado ? "text-gris line-through decoration-ambar decoration-2" : !d.disponible ? "text-crema line-through" : "text-crema"}`}>
                           {getName(d)}
                         </span>
-                        {!d.disponible && (
+                        {agotado && (
+                          <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-gris border border-gris/40 px-1.5 py-0.5 rounded-sm">
+                            Agotado por hoy
+                          </span>
+                        )}
+                        {!d.disponible && !agotado && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-gris border border-gris/40 px-1.5 py-0.5 rounded-sm">
                             {t("menu.badge.nodisponible")}
                           </span>
                         )}
-                        {promo && promo.plato_id === d.id && d.disponible && (
+                        {promoActiva && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-negro bg-ambar px-1.5 py-0.5 rounded-sm">
                             {t("menu.badge.oferta")} {promo.tipo_descuento === "porcentaje" ? `-${promo.valor_descuento}%` : `-$${promo.valor_descuento}`}
+                            {promo.cantidad_restante !== null && ` — ${promo.cantidad_restante} uds`}
                           </span>
                         )}
-                        {d.nombre.includes("★") && d.disponible && !(promo?.plato_id === d.id) && (
+                        {d.nombre.includes("★") && d.disponible && !promo && (
                           <span className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-ambar border border-ambar px-1.5 py-0.5 rounded-sm">
                             {t("menu.badge.especialidad")}
                           </span>
@@ -192,7 +204,7 @@ const MenuSection = () => {
                     </div>
                     {d.precio > 0 && (
                       <div className="text-right whitespace-nowrap">
-                        {promo && promo.plato_id === d.id ? (
+                        {promoActiva ? (
                           <>
                             <span className="font-body text-[0.78rem] text-gris line-through block">${d.precio.toLocaleString()}</span>
                             <span className="font-body font-bold text-[1.05rem] text-ambar">
@@ -205,7 +217,7 @@ const MenuSection = () => {
                         ) : (
                           <span className="font-body font-medium text-[0.92rem] text-ambar">${d.precio.toLocaleString()}</span>
                         )}
-                        {d.disponible && (
+                        {d.disponible && !agotado && (
                           <button
                             onClick={(e) => { e.stopPropagation(); setAlertPlatoId(d.id); }}
                             className="flex items-center gap-1 mt-1 font-body text-[0.68rem] text-crema2 hover:text-ambar transition-colors"
@@ -217,6 +229,8 @@ const MenuSection = () => {
                       </div>
                     )}
                   </div>
+                  );
+                })}
                 ))}
               </div>
             </>
