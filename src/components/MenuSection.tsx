@@ -87,6 +87,15 @@ const MenuSection = () => {
   const getName = (p: Plato) => (lang === "en" && p.nombre_en) ? p.nombre_en : p.nombre;
   const getDesc = (p: Plato) => (lang === "en" && p.descripcion_en) ? p.descripcion_en : p.descripcion;
 
+  const getPromo = (platoId: string): Promo | null => {
+    return promos.find(p => p.plato_id === platoId) || null;
+  };
+
+  const isAgotado = (platoId: string): boolean => {
+    const p = getPromo(platoId);
+    return !!p && p.agotar_al_terminar && p.cantidad_restante !== null && p.cantidad_restante <= 0;
+  };
+
   return (
     <section id="carta" className="bg-negro py-24 px-4 lg:px-6">
       <div className="max-w-5xl mx-auto">
