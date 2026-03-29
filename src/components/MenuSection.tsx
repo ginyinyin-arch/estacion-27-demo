@@ -40,7 +40,7 @@ const categorias = ["Lomos", "Hamburguesas", "Tex Mex", "Ensaladas", "Picadas", 
 const MenuSection = () => {
   const [active, setActive] = useState("Lomos");
   const [platos, setPlatos] = useState<Plato[]>([]);
-  const [promo, setPromo] = useState<Promo | null>(null);
+  const [promos, setPromos] = useState<Promo[]>([]);
   const { lang, t } = useLang();
   const tabsRef = useRef<HTMLDivElement>(null);
 
