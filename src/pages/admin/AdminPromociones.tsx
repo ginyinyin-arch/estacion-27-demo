@@ -54,10 +54,13 @@ const AdminPromociones = () => {
     try {
       const durMs = Number(duracion) * (unidadDuracion === "horas" ? 3600000 : 86400000);
       const expira = new Date(Date.now() + durMs).toISOString();
+      const cantidadNum = cantidad ? Number(cantidad) : null;
       await supabase.from("promociones").insert({
         plato_id: platoId, tipo_descuento: tipoDescuento,
         valor_descuento: Number(valorDescuento), mensaje: mensaje || null,
         activa: true, expira_en: expira,
+        cantidad: cantidadNum, cantidad_restante: cantidadNum,
+        agotar_al_terminar: agotarAlTerminar,
       });
 
       // Notify subscribers
