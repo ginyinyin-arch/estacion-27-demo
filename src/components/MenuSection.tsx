@@ -58,11 +58,15 @@ const MenuSection = () => {
       const { data } = await supabase.from("platos").select("*").order("orden", { ascending: true });
       if (data) setPlatos(data as Plato[]);
     };
-    const fetchPromo = async () => {
-      const { data } = await supabase.from("promociones").select("plato_id, tipo_descuento, valor_descuento, activa, expira_en")
-        .eq("activa", true).limit(1).maybeSingle();
-      if (data && new Date(data.expira_en) > new Date()) setPromo(data);
-      else setPromo(null);
+    const fetchPromos = async () => {
+      const { data } = await supabase.from("promociones").select("plato_id, tipo_descuento, valor_descuento, activa, expira_en, cantidad, cantidad_restante, agotar_al_terminar")
+        .eq("activa", true);
+      if (data) {
+        const valid = data.filter(p => new Date(p.expira_en) > new Date());
+        setPromos(valid);
+      } else {
+        setPromos([]);
+      }
     };
     fetchPlatos(); fetchPromo();
 
