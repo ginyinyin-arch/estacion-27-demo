@@ -75,7 +75,7 @@ const AdminPromociones = () => {
       }).catch((e) => console.error("Error notificando:", e));
 
       toast({ title: "Promoción activada" });
-      setPlatoId(""); setValorDescuento(""); setMensaje(""); setDuracion("24");
+      setPlatoId(""); setValorDescuento(""); setMensaje(""); setDuracion("24"); setCantidad(""); setAgotarAlTerminar(false);
     } catch { toast({ title: "Error", variant: "destructive" }); }
     setLoading(false);
   };
