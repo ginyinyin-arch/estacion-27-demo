@@ -41,6 +41,9 @@ const PromoBannerItem = ({ promo, plato }: { promo: Promo; plato: Plato }) => {
     <p className="font-body text-sm text-[#f0e8d0]">
       {promo.mensaje && <span className="font-semibold text-[#C8860A]">{promo.mensaje} — </span>}
       <span className="font-medium">{plato.nombre}</span> con <span className="text-[#C8860A] font-semibold">{descText}</span>
+      {promo.cantidad_restante !== null && (
+        <span className="ml-1 font-semibold text-[#C8860A]">— {promo.cantidad_restante} Unidades disponibles</span>
+      )}
       {" "}por tiempo limitado
       {timeLeft && (
         <span className="ml-2 text-[#C8860A] font-mono text-xs bg-[#C8860A]/10 px-2 py-0.5 rounded inline-flex items-center gap-1 transition-all duration-300">
