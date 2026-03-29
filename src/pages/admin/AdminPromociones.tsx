@@ -22,6 +22,8 @@ const AdminPromociones = () => {
   const [duracion, setDuracion] = useState("24");
   const [unidadDuracion, setUnidadDuracion] = useState("horas");
   const [mensaje, setMensaje] = useState("");
+  const [cantidad, setCantidad] = useState("");
+  const [agotarAlTerminar, setAgotarAlTerminar] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
