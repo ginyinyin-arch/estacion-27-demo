@@ -68,13 +68,13 @@ const MenuSection = () => {
         setPromos([]);
       }
     };
-    fetchPlatos(); fetchPromo();
+    fetchPlatos(); fetchPromos();
 
     const ch1 = supabase.channel("platos-public")
       .on("postgres_changes", { event: "*", schema: "public", table: "platos" }, () => fetchPlatos())
       .subscribe();
     const ch2 = supabase.channel("promo-menu")
-      .on("postgres_changes", { event: "*", schema: "public", table: "promociones" }, () => fetchPromo())
+      .on("postgres_changes", { event: "*", schema: "public", table: "promociones" }, () => fetchPromos())
       .subscribe();
     return () => { supabase.removeChannel(ch1); supabase.removeChannel(ch2); };
   }, []);

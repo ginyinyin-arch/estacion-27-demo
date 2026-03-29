@@ -187,6 +187,23 @@ const AdminPromociones = () => {
             placeholder="Semana del Lomo, Happy Hour..." />
         </div>
 
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-[#999] mb-1">Cantidad (opcional)</label>
+            <input type="number" min="1" value={cantidad} onChange={e => setCantidad(e.target.value)}
+              className="w-full bg-[#111] border border-[#333] text-[#f0e8d0] rounded px-3 py-2 text-sm"
+              placeholder="Ej: 15" />
+            <p className="text-[#666] text-xs mt-1">Si se deja vacío, la cantidad será indeterminada</p>
+          </div>
+          <div className="flex items-center pt-5">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-[#999]">
+              <input type="checkbox" checked={agotarAlTerminar} onChange={e => setAgotarAlTerminar(e.target.checked)}
+                className="w-4 h-4 rounded border-[#333] bg-[#111] accent-[#C8860A]" />
+              Marcar como agotado al acabar existencias
+            </label>
+          </div>
+        </div>
+
         <button onClick={activarPromo} disabled={loading}
           className="w-full bg-[#C8860A] hover:bg-[#a06d08] text-white font-semibold py-2.5 rounded transition-colors disabled:opacity-50">
           {loading ? "Activando..." : "ACTIVAR PROMOCIÓN"}
