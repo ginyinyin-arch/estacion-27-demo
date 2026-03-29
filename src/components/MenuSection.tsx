@@ -231,7 +231,6 @@ const MenuSection = () => {
                   </div>
                   );
                 })}
-                ))}
               </div>
             </>
           )}
