@@ -101,6 +101,12 @@ const AdminPromociones = () => {
                   <p className="text-[#999] text-sm">
                     {promo.tipo_descuento === "porcentaje" ? `${promo.valor_descuento}% OFF` : `$${promo.valor_descuento} OFF`}
                     {promo.mensaje && ` — ${promo.mensaje}`}
+                    {promo.cantidad !== null && (
+                      <span className="ml-2 text-[#C8860A]">
+                        · {promo.cantidad_restante}/{promo.cantidad} uds
+                        {promo.agotar_al_terminar && " (agota)"}
+                      </span>
+                    )}
                   </p>
                   <p className="text-[#666] text-xs mt-1">
                     Expira: {new Date(promo.expira_en).toLocaleString("es-AR")}
