@@ -24,6 +24,9 @@ interface Promo {
   valor_descuento: number;
   activa: boolean;
   expira_en: string;
+  cantidad: number | null;
+  cantidad_restante: number | null;
+  agotar_al_terminar: boolean;
 }
 
 const categoryImages: Record<string, string> = {
