@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface Promo {
   id: string; plato_id: string; tipo_descuento: string; valor_descuento: number;
   mensaje: string | null; activa: boolean; expira_en: string;
+  cantidad: number | null; cantidad_restante: number | null; agotar_al_terminar: boolean;
 }
 interface Plato { id: string; nombre: string; precio: number; }
 
