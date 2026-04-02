@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
+import SmartPhoneInput from "@/components/SmartPhoneInput";
 
 interface Plato {
   id: string;
@@ -54,7 +55,7 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 
   const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-  const isValidPhone = (v: string) => v.replace(/\D/g, "").length >= 10;
+  const isValidPhone = (v: string) => v.replace(/[^+\d]/g, "").length >= 10;
 
   const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
     (!emailChecked || (email.trim() && isValidEmail(email))) &&
@@ -265,16 +266,12 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
             </label>
             <div
               className="overflow-hidden transition-all duration-300 ease-in-out"
-              style={{ maxHeight: whatsappChecked ? "80px" : "0", opacity: whatsappChecked ? 1 : 0 }}
+              style={{ maxHeight: whatsappChecked ? "120px" : "0", opacity: whatsappChecked ? 1 : 0 }}
             >
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => { setPhone(e.target.value); setErrors((er) => ({ ...er, phone: undefined })); }}
-                placeholder="+54 9 351 ..."
-                className="w-full mt-2 px-3 py-2.5 rounded bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors"
+              <SmartPhoneInput
+                onChange={(fullNumber) => { setPhone(fullNumber); setErrors((er) => ({ ...er, phone: undefined })); }}
+                error={errors.phone}
               />
-              {errors.phone && <p className="text-red-400 text-xs mt-1 font-body">{errors.phone}</p>}
             </div>
           </div>
         </div>
