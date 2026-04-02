@@ -55,7 +55,7 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 
   const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-  const isValidPhone = (v: string) => v.replace(/\D/g, "").length >= 10;
+  const isValidPhone = (v: string) => v.replace(/[^+\d]/g, "").length >= 10;
 
   const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
     (!emailChecked || (email.trim() && isValidEmail(email))) &&
