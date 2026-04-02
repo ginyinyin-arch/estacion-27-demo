@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
+import SmartPhoneInput from "@/components/SmartPhoneInput";
 
 interface Plato {
   id: string;
