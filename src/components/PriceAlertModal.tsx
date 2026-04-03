@@ -54,8 +54,17 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const [done, setDone] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 
-  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-  const isValidPhone = (v: string) => v.replace(/[^+\d]/g, "").length >= 10;
+  const normalizePhone = (v: string) => {
+    let cleaned = v.replace(/[\s\-\(\)]/g, "").replace(/[^+\d]/g, "");
+    if (!cleaned.startsWith("+")) cleaned = "+" + cleaned;
+    return cleaned;
+  };
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+  const isValidPhone = (v: string) => {
+    const n = normalizePhone(v);
+    const digits = n.slice(1);
+    return /^\d+$/.test(digits) && digits.length >= 10 && digits.length <= 15;
+  };
 
   const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
     (!emailChecked || (email.trim() && isValidEmail(email))) &&
@@ -108,19 +117,56 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
 
   const handleSubmit = async () => {
     const newErrors: { email?: string; phone?: string } = {};
-    if (emailChecked && !isValidEmail(email)) newErrors.email = "Email inválido";
-    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = "Mínimo 10 dígitos";
+    if (emailChecked && !isValidEmail(email)) newErrors.email = lang === "en" ? "Invalid email" : "Email inválido";
+    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = lang === "en" ? "Invalid number" : "Número inválido";
     if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
     if (!canSubmit) return;
 
     setSaving(true);
-    const rows: { plato_id: string; canal: string; contacto: string; email?: string; whatsapp?: string }[] = [];
     const platoIds = Array.from(selected);
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = normalizePhone(phone);
+
+    // Deduplication check
+    for (const plato_id of platoIds) {
+      if (emailChecked) {
+        const { data: existing } = await supabase
+          .from("alertas_precio")
+          .select("id")
+          .eq("plato_id", plato_id)
+          .eq("canal", "email")
+          .eq("contacto", normalizedEmail)
+          .eq("activa", true)
+          .limit(1);
+        if (existing && existing.length > 0) {
+          setErrors({ email: lang === "en" ? "You're already on this dish's list" : "Ya estás en la lista de este plato" });
+          setSaving(false);
+          return;
+        }
+      }
+      if (whatsappChecked) {
+        const { data: existing } = await supabase
+          .from("alertas_precio")
+          .select("id")
+          .eq("plato_id", plato_id)
+          .eq("canal", "whatsapp")
+          .eq("contacto", normalizedPhone)
+          .eq("activa", true)
+          .limit(1);
+        if (existing && existing.length > 0) {
+          setErrors({ phone: lang === "en" ? "You're already on this dish's list" : "Ya estás en la lista de este plato" });
+          setSaving(false);
+          return;
+        }
+      }
+    }
+
+    const rows: { plato_id: string; canal: string; contacto: string; email?: string; whatsapp?: string }[] = [];
     if (emailChecked) {
-      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: email.trim(), email: email.trim() }));
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "email", contacto: normalizedEmail, email: normalizedEmail }));
     }
     if (whatsappChecked) {
-      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: phone.trim(), whatsapp: phone.trim() }));
+      platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: normalizedPhone, whatsapp: normalizedPhone }));
     }
     await supabase.from("alertas_precio").insert(rows as any);
     setSaving(false);
