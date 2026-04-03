@@ -117,8 +117,8 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
 
   const handleSubmit = async () => {
     const newErrors: { email?: string; phone?: string } = {};
-    if (emailChecked && !isValidEmail(email)) newErrors.email = "Email inválido";
-    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = "Mínimo 10 dígitos";
+    if (emailChecked && !isValidEmail(email)) newErrors.email = lang === "en" ? "Invalid email" : "Email inválido";
+    if (whatsappChecked && !isValidPhone(phone)) newErrors.phone = lang === "en" ? "Invalid number" : "Número inválido";
     if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
     if (!canSubmit) return;
 
