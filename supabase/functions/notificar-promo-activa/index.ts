@@ -28,7 +28,6 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // 1. Get dish info
     const { data: plato } = await supabase
       .from("platos")
       .select("nombre, precio")
@@ -42,14 +41,12 @@ serve(async (req) => {
       );
     }
 
-    // 2. Calculate promo price
     const precioBase = Number(plato.precio);
     const precioPromo =
       tipo_descuento === "porcentaje"
         ? precioBase * (1 - Number(valor_descuento) / 100)
         : precioBase - Number(valor_descuento);
 
-    // 3. Get active subscribers for this dish
     const { data: suscriptores } = await supabase
       .from("alertas_precio")
       .select("canal, contacto, email, whatsapp")
@@ -75,6 +72,7 @@ serve(async (req) => {
     });
     const nombrePlato = plato.nombre;
     const mensajePromo = mensaje || "¡Oferta especial!";
+    const bajaUrl = `${SITE_URL}/baja`;
 
     let notified = 0;
 
@@ -82,7 +80,6 @@ serve(async (req) => {
       const emailAddr = sub.email || (sub.canal === "email" ? sub.contacto : null);
       const whatsappNum = sub.whatsapp || (sub.canal === "whatsapp" ? sub.contacto : null);
 
-      // Send email via Resend
       if (emailAddr && RESEND_API_KEY) {
         try {
           const res = await fetch("https://api.resend.com/emails", {
@@ -95,7 +92,7 @@ serve(async (req) => {
               from: "Estación 27 <noreply@estacion27.com>",
               to: [emailAddr],
               subject: `🎉 ¡Promo en ${nombrePlato}! — Estación 27`,
-              text: `${mensajePromo}. Precio especial: $${Math.round(precioPromo)} (antes $${precioBase}). Válido hasta ${fechaFin}: ${SITE_URL}`,
+              text: `${mensajePromo}. Precio especial: $${Math.round(precioPromo)} (antes $${precioBase}). Válido hasta ${fechaFin}: ${SITE_URL}\n\n¿No querés más alertas? Cancelá acá: ${bajaUrl}`,
             }),
           });
           await res.text();
@@ -105,14 +102,13 @@ serve(async (req) => {
         }
       }
 
-      // Send WhatsApp via Twilio
       if (whatsappNum && TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_WHATSAPP_NUMBER) {
         try {
           const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
           const body = new URLSearchParams({
             To: `whatsapp:${whatsappNum}`,
             From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
-            Body: `¡Buenas! El ${nombrePlato} en Estación 27 tiene promo: ${mensajePromo} → $${Math.round(precioPromo)} (antes $${precioBase}) 🎉 Hasta ${fechaFin}: ${SITE_URL}`,
+            Body: `¡Buenas! El ${nombrePlato} en Estación 27 tiene promo: ${mensajePromo} → $${Math.round(precioPromo)} (antes $${precioBase}) 🎉 Hasta ${fechaFin}: ${SITE_URL}\n\nPara darte de baja: ${bajaUrl}`,
           });
 
           const res = await fetch(twilioUrl, {
