@@ -63,7 +63,7 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const isValidPhone = (v: string) => {
     const n = normalizePhone(v);
     const digits = n.slice(1);
-    return /^\d+$/.test(digits) && digits.length >= 10 && digits.length <= 15;
+    return /^\d+$/.test(digits) && digits.length >= 6 && digits.length <= 15;
   };
 
   const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
