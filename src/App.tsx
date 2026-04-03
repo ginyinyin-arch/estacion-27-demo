@@ -18,6 +18,7 @@ import AdminEventos from "./pages/admin/AdminEventos.tsx";
 import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
+import Baja from "./pages/Baja.tsx";
 
 const queryClient = new QueryClient();
 
