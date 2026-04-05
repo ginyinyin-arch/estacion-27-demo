@@ -63,7 +63,7 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
   const isValidPhone = (v: string) => {
     const n = normalizePhone(v);
     const digits = n.slice(1);
-    return /^\d+$/.test(digits) && digits.length >= 10 && digits.length <= 15;
+    return /^\d+$/.test(digits) && digits.length >= 6 && digits.length <= 15;
   };
 
   const canSubmit = selected.size > 0 && (emailChecked || whatsappChecked) &&
@@ -329,6 +329,12 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
         >
           {saving ? "..." : t("alert.activate")}
         </button>
+        <p className="text-center mt-3">
+          <a href="/baja" className="font-body text-[0.72rem] text-gris hover:text-crema2 transition-colors">
+            {lang === "en" ? "Already getting alerts? " : "¿Ya recibís alertas? "}
+            <span className="underline underline-offset-2">{lang === "en" ? "Cancel" : "Cancelar"}</span>
+          </a>
+        </p>
       </div>
     </div>
   );
