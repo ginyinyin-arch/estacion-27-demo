@@ -46,11 +46,8 @@ const AdminReservas = () => {
 
   useEffect(() => {
     fetchData();
-    const channel = supabase
-      .channel("reservas-admin")
-      .on("postgres_changes", { event: "*", schema: "public", table: "reservas" }, () => fetchData())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const getEventoNombre = (eventoId: string | null) => {
