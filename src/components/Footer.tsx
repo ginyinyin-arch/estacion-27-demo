@@ -59,6 +59,9 @@ const Footer = () => {
         <span className="font-body font-light text-[0.74rem]" style={{ color: "rgba(240,232,208,0.30)" }}>
           © 2026 Estación 27 · Córdoba, Argentina
         </span>
+        <a href="/baja" className="font-body font-light text-[0.7rem] hover:underline transition-colors" style={{ color: "rgba(240,232,208,0.25)" }}>
+          {t("footer.cancelar_alertas")}
+        </a>
       </div>
 
       <div className="text-center pt-8 pb-2">
