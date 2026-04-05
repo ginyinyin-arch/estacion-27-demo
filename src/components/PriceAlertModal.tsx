@@ -329,6 +329,12 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
         >
           {saving ? "..." : t("alert.activate")}
         </button>
+        <p className="text-center mt-3">
+          <a href="/baja" className="font-body text-[0.72rem] text-gris hover:text-crema2 transition-colors">
+            {lang === "en" ? "Already getting alerts? " : "¿Ya recibís alertas? "}
+            <span className="underline underline-offset-2">{lang === "en" ? "Cancel" : "Cancelar"}</span>
+          </a>
+        </p>
       </div>
     </div>
   );
