@@ -18,7 +18,6 @@ import AdminEventos from "./pages/admin/AdminEventos.tsx";
 import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
-import Baja from "./pages/Baja.tsx";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +30,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/baja" element={<Baja />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin/carta" element={<AdminCarta />} />

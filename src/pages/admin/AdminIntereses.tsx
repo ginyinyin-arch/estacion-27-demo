@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { ChevronLeft } from "lucide-react";
 
 interface AlertCount {
   plato_id: string;
@@ -28,6 +27,7 @@ const AdminIntereses = () => {
 
   const fetchCounts = async () => {
     setLoading(true);
+    // Get all active alerts with plato info
     const { data: alertas } = await supabase
       .from("alertas_precio")
       .select("plato_id")
@@ -72,35 +72,6 @@ const AdminIntereses = () => {
     await fetchDetails(item.plato_id);
   };
 
-  const handleDelete = async (alertId: string) => {
-    if (!confirm("¿Eliminar este interés?")) return;
-    const { error } = await supabase
-      .from("alertas_precio")
-      .delete()
-      .eq("id", alertId);
-    if (error) {
-      toast.error("Error al eliminar");
-      return;
-    }
-    toast.success("Eliminado");
-    const newDetails = details.filter((d) => d.id !== alertId);
-    setDetails(newDetails);
-    // Update counts
-    if (selectedPlato) {
-      const newCount = newDetails.length;
-      setSelectedPlato({ ...selectedPlato, count: newCount });
-      setCounts((prev) =>
-        prev
-          .map((c) => c.plato_id === selectedPlato.plato_id ? { ...c, count: newCount } : c)
-          .filter((c) => c.count > 0)
-      );
-      if (newCount === 0) {
-        setSelectedPlato(null);
-        setDetails([]);
-      }
-    }
-  };
-
   if (selectedPlato) {
     return (
       <div>
@@ -122,18 +93,9 @@ const AdminIntereses = () => {
                   {d.canal}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-[#666]">
-                  {new Date(d.created_at).toLocaleDateString()}
-                </span>
-                <button
-                  onClick={() => handleDelete(d.id)}
-                  className="text-[#666] hover:text-red-400 transition-colors"
-                  title="Eliminar"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
+              <span className="text-xs text-[#666]">
+                {new Date(d.created_at).toLocaleDateString()}
+              </span>
             </div>
           ))}
           {details.length === 0 && (
