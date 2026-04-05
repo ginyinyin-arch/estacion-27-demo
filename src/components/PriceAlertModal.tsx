@@ -168,8 +168,13 @@ const PriceAlertModal = ({ platos, initialPlatoId, onClose }: PriceAlertModalPro
     if (whatsappChecked) {
       platoIds.forEach((plato_id) => rows.push({ plato_id, canal: "whatsapp", contacto: normalizedPhone, whatsapp: normalizedPhone }));
     }
-    await supabase.from("alertas_precio").insert(rows as any);
+    const { error } = await supabase.from("alertas_precio").insert(rows as any);
     setSaving(false);
+    if (error) {
+      console.error("Error inserting alertas_precio:", error);
+      setErrors({ email: lang === "en" ? "There was a problem saving. Try again." : "Hubo un problema al guardar. Intentá de nuevo." });
+      return;
+    }
     setDone(true);
   };
 
