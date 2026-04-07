@@ -84,21 +84,19 @@
     transform: translateY(-2px);
   }
   .btn-outline {
-    @apply uppercase tracking-[0.16em];
+    @apply uppercase tracking-[0.16em] font-bold;
     font-family: 'Jost', sans-serif;
-    font-weight: 500;
     font-size: 0.78rem;
     padding: 14px 32px;
     border-radius: 2px;
-    border: 1px solid rgba(var(--gris-rgb), 0.30);
-    color: hsl(var(--crema2));
+    border: 2px solid hsl(var(--ambar));
+    color: hsl(var(--ambar));
     background: transparent;
-    transition: all 200ms ease;
+    transition: background 0.3s ease, color 0.3s ease;
   }
   .btn-outline:hover {
-    border-color: hsl(var(--crema));
-    color: hsl(var(--crema));
-    background: rgba(var(--gris-rgb), 0.05);
+    background: hsl(var(--ambar));
+    color: hsl(var(--negro));
   }
   .reveal {
     opacity: 0;
