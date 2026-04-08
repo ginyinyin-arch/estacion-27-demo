@@ -30,17 +30,12 @@ const AdminEstado = () => {
     if (!estado) return;
     setSaving(true);
     const newAbierto = !estado.abierto;
-    const updates: Record<string, unknown> = {
+    const updates = {
       abierto: newAbierto,
       updated_at: new Date().toISOString(),
+      motivo_cierre: newAbierto ? null : (motivo || null),
+      fecha_vuelta: newAbierto ? null : (fecha || null),
     };
-    if (newAbierto) {
-      updates.motivo_cierre = null;
-      updates.fecha_vuelta = null;
-    } else {
-      updates.motivo_cierre = motivo || null;
-      updates.fecha_vuelta = fecha || null;
-    }
     await supabase.from("estado_local").update(updates).eq("id", estado.id);
     toast.success(newAbierto ? "Local marcado como abierto" : "Local marcado como cerrado");
     await fetchEstado();
