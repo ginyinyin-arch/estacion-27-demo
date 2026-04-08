@@ -191,6 +191,7 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
   const [descripcion, setDescripcion] = useState(plato?.descripcion || "");
   const [precio, setPrecio] = useState(plato?.precio?.toString() || "");
   const [imagenFile, setImagenFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(plato?.imagen_url || null);
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -240,7 +241,14 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
         <FormInput label="Precio" type="number" value={precio} onChange={setPrecio} required />
         <div>
           <label className="block text-xs text-[#888] mb-1">Imagen</label>
-          <input type="file" accept="image/*" onChange={(e) => setImagenFile(e.target.files?.[0] || null)} className="text-xs text-[#888]" />
+          {previewUrl && (
+            <img src={previewUrl} alt="Preview" className="w-12 h-12 rounded object-cover mb-2 border border-[#333]" />
+          )}
+          <input type="file" accept="image/*" onChange={(e) => {
+            const file = e.target.files?.[0] || null;
+            setImagenFile(file);
+            if (file) setPreviewUrl(URL.createObjectURL(file));
+          }} className="text-xs text-[#888]" />
         </div>
         <div className="flex gap-2 pt-2">
           <button type="submit" disabled={saving} className="flex-1 py-2 rounded bg-[#C8860A] text-[#111] font-semibold text-sm hover:bg-[#d4950f] disabled:opacity-50">

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Wine, Bell } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Wine, Bell, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
 import PriceAlertModal from "./PriceAlertModal";
@@ -80,6 +80,15 @@ const MenuSection = () => {
   }, []);
 
   const [alertPlatoId, setAlertPlatoId] = useState<string | null>(null);
+  const [lightboxPlato, setLightboxPlato] = useState<Plato | null>(null);
+
+  const closeLightbox = useCallback(() => setLightboxPlato(null), []);
+  useEffect(() => {
+    if (!lightboxPlato) return;
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeLightbox(); };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxPlato, closeLightbox]);
 
   const activePlatos = platos.filter((p) => p.categoria === active);
   const image = categoryImages[active];
@@ -169,9 +178,21 @@ const MenuSection = () => {
                     style={{ borderColor: "rgba(240,232,208,0.06)" }}
                     onMouseEnter={(e) => { if (!itemDisabled) { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; } }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)"; e.currentTarget.style.boxShadow = "none"; }}>
-                    <div className="flex-1">
+                    <div className="flex-1 flex gap-3">
+                      {d.imagen_url && (
+                        <img
+                          src={d.imagen_url}
+                          alt={getName(d)}
+                          className="w-12 h-12 rounded-md object-cover cursor-pointer shrink-0"
+                          onClick={() => setLightboxPlato(d)}
+                        />
+                      )}
+                      <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-display font-semibold text-[1.05rem] ${agotado ? "text-gris line-through decoration-ambar decoration-2" : !d.disponible ? "text-crema line-through" : "text-crema"}`}>
+                        <span
+                          className={`font-display font-semibold text-[1.05rem] ${agotado ? "text-gris line-through decoration-ambar decoration-2" : !d.disponible ? "text-crema line-through" : "text-crema"} ${d.imagen_url ? "cursor-pointer" : ""}`}
+                          onClick={() => d.imagen_url && setLightboxPlato(d)}
+                        >
                           {getName(d)}
                         </span>
                         {agotado && (
@@ -201,6 +222,7 @@ const MenuSection = () => {
                           {getDesc(d)}
                         </p>
                       )}
+                      </div>
                     </div>
                     {d.precio > 0 && (
                       <div className="text-right whitespace-nowrap">
@@ -242,6 +264,18 @@ const MenuSection = () => {
             initialPlatoId={alertPlatoId}
             onClose={() => setAlertPlatoId(null)}
           />
+        )}
+
+        {lightboxPlato && lightboxPlato.imagen_url && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={closeLightbox}>
+            <div className="relative max-w-[90vw] max-h-[80vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+              <button onClick={closeLightbox} className="absolute -top-3 -right-3 p-1 text-crema/70 hover:text-crema z-10">
+                <X size={24} />
+              </button>
+              <img src={lightboxPlato.imagen_url} alt={getName(lightboxPlato)} className="max-w-[90vw] max-h-[70vh] object-contain rounded" />
+              <p className="font-display font-semibold text-crema mt-3 text-center">{getName(lightboxPlato)}</p>
+            </div>
+          </div>
         )}
       </div>
     </section>
