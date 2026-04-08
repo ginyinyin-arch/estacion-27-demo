@@ -178,9 +178,21 @@ const MenuSection = () => {
                     style={{ borderColor: "rgba(240,232,208,0.06)" }}
                     onMouseEnter={(e) => { if (!itemDisabled) { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; } }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)"; e.currentTarget.style.boxShadow = "none"; }}>
-                    <div className="flex-1">
+                    <div className="flex-1 flex gap-3">
+                      {d.imagen_url && (
+                        <img
+                          src={d.imagen_url}
+                          alt={getName(d)}
+                          className="w-12 h-12 rounded-md object-cover cursor-pointer shrink-0"
+                          onClick={() => setLightboxPlato(d)}
+                        />
+                      )}
+                      <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`font-display font-semibold text-[1.05rem] ${agotado ? "text-gris line-through decoration-ambar decoration-2" : !d.disponible ? "text-crema line-through" : "text-crema"}`}>
+                        <span
+                          className={`font-display font-semibold text-[1.05rem] ${agotado ? "text-gris line-through decoration-ambar decoration-2" : !d.disponible ? "text-crema line-through" : "text-crema"} ${d.imagen_url ? "cursor-pointer" : ""}`}
+                          onClick={() => d.imagen_url && setLightboxPlato(d)}
+                        >
                           {getName(d)}
                         </span>
                         {agotado && (
