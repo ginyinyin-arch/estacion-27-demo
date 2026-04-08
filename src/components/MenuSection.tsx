@@ -44,6 +44,7 @@ const MenuSection = () => {
   const [promos, setPromos] = useState<Promo[]>([]);
   const { lang, t } = useLang();
   const tabsRef = useRef<HTMLDivElement>(null);
+  const { takeawayActivo, addItem } = useCart();
 
   const scrollToTab = (cat: string) => {
     const container = tabsRef.current;
