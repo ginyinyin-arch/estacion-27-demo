@@ -265,6 +265,18 @@ const MenuSection = () => {
             onClose={() => setAlertPlatoId(null)}
           />
         )}
+
+        {lightboxPlato && lightboxPlato.imagen_url && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={closeLightbox}>
+            <div className="relative max-w-[90vw] max-h-[80vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+              <button onClick={closeLightbox} className="absolute -top-3 -right-3 p-1 text-crema/70 hover:text-crema z-10">
+                <X size={24} />
+              </button>
+              <img src={lightboxPlato.imagen_url} alt={getName(lightboxPlato)} className="max-w-[90vw] max-h-[70vh] object-contain rounded" />
+              <p className="font-display font-semibold text-crema mt-3 text-center">{getName(lightboxPlato)}</p>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
