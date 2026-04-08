@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Wine, Bell, X } from "lucide-react";
+import { Wine, Bell, X, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
 import PriceAlertModal from "./PriceAlertModal";
+import { useCart } from "@/contexts/CartContext";
 
 interface Plato {
   id: string;
@@ -43,6 +44,7 @@ const MenuSection = () => {
   const [promos, setPromos] = useState<Promo[]>([]);
   const { lang, t } = useLang();
   const tabsRef = useRef<HTMLDivElement>(null);
+  const { takeawayActivo, addItem } = useCart();
 
   const scrollToTab = (cat: string) => {
     const container = tabsRef.current;
@@ -174,10 +176,11 @@ const MenuSection = () => {
 
                   return (
                   <div key={d.id}
-                    className={`bg-carbon border rounded p-5 flex justify-between items-start gap-4 transition-all duration-200 hover:-translate-y-0.5 ${itemDisabled ? "opacity-50 grayscale" : ""}`}
+                    className={`bg-carbon border rounded p-5 relative transition-all duration-200 hover:-translate-y-0.5 ${itemDisabled ? "opacity-50 grayscale" : ""}`}
                     style={{ borderColor: "rgba(240,232,208,0.06)" }}
                     onMouseEnter={(e) => { if (!itemDisabled) { e.currentTarget.style.borderColor = "rgba(200,134,10,0.22)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35)"; } }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(240,232,208,0.06)"; e.currentTarget.style.boxShadow = "none"; }}>
+                    <div className="flex justify-between items-start gap-4">
                     <div className="flex-1 flex gap-3">
                       {d.imagen_url && (
                         <img
@@ -249,6 +252,24 @@ const MenuSection = () => {
                           </button>
                         )}
                       </div>
+                    )}
+                    </div>
+                    {takeawayActivo && d.disponible && !agotado && d.precio > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const finalPrice = promoActiva
+                            ? (promo.tipo_descuento === "porcentaje"
+                              ? Math.round(d.precio * (1 - promo.valor_descuento / 100))
+                              : Math.max(0, d.precio - promo.valor_descuento))
+                            : d.precio;
+                          addItem(d.id, getName(d), finalPrice);
+                        }}
+                        className="absolute bottom-3 right-3 flex items-center gap-1 font-body font-semibold text-[0.7rem] text-ambar hover:text-negro hover:bg-ambar border border-ambar rounded px-2 py-1 transition-colors"
+                      >
+                        <Plus size={12} />
+                        Agregar
+                      </button>
                     )}
                   </div>
                   );
