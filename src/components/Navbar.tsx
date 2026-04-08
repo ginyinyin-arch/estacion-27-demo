@@ -81,6 +81,16 @@ const Navbar = () => {
               className="hidden lg:inline-block font-body font-medium text-[0.72rem] uppercase tracking-[0.18em] text-ambar border border-ambar px-[18px] py-2 rounded-sm bg-transparent hover:bg-ambar hover:text-negro transition-all duration-200">
               {t("nav.reservar")}
             </a>
+            {takeawayActivo && (
+              <button onClick={() => setDrawerOpen(true)} className="relative flex items-center justify-center w-8 h-8 text-crema2 hover:text-ambar transition-colors" aria-label="Carrito">
+                <ShoppingCart size={20} strokeWidth={1.5} />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-ambar text-negro text-[0.6rem] font-bold leading-none px-1">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            )}
             <button className="lg:hidden text-crema" onClick={() => setOpen(true)} aria-label="Abrir menú">
               <Menu size={22} strokeWidth={1.5} />
             </button>
