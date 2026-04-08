@@ -58,16 +58,19 @@ export type Database = {
       configuracion: {
         Row: {
           id: string
+          takeaway_activo: boolean
           updated_at: string
           whatsapp_numero: string
         }
         Insert: {
           id?: string
+          takeaway_activo?: boolean
           updated_at?: string
           whatsapp_numero?: string
         }
         Update: {
           id?: string
+          takeaway_activo?: boolean
           updated_at?: string
           whatsapp_numero?: string
         }
@@ -232,6 +235,48 @@ export type Database = {
           postre_en?: string | null
           precio?: number
           valido_hasta_hora?: string
+        }
+        Relationships: []
+      }
+      pedidos: {
+        Row: {
+          created_at: string
+          email: string | null
+          estado: string
+          id: string
+          items: Json
+          mp_payment_id: string | null
+          mp_preference_id: string | null
+          nombre_cliente: string
+          notas: string | null
+          telefono: string | null
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          estado?: string
+          id?: string
+          items: Json
+          mp_payment_id?: string | null
+          mp_preference_id?: string | null
+          nombre_cliente: string
+          notas?: string | null
+          telefono?: string | null
+          total: number
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          estado?: string
+          id?: string
+          items?: Json
+          mp_payment_id?: string | null
+          mp_preference_id?: string | null
+          nombre_cliente?: string
+          notas?: string | null
+          telefono?: string | null
+          total?: number
         }
         Relationships: []
       }
