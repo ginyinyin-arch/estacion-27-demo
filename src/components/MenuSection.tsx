@@ -222,6 +222,7 @@ const MenuSection = () => {
                           {getDesc(d)}
                         </p>
                       )}
+                      </div>
                     </div>
                     {d.precio > 0 && (
                       <div className="text-right whitespace-nowrap">
