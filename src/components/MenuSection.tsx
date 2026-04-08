@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { Wine, Bell } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Wine, Bell, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/contexts/LangContext";
 import PriceAlertModal from "./PriceAlertModal";
@@ -80,6 +80,15 @@ const MenuSection = () => {
   }, []);
 
   const [alertPlatoId, setAlertPlatoId] = useState<string | null>(null);
+  const [lightboxPlato, setLightboxPlato] = useState<Plato | null>(null);
+
+  const closeLightbox = useCallback(() => setLightboxPlato(null), []);
+  useEffect(() => {
+    if (!lightboxPlato) return;
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeLightbox(); };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxPlato, closeLightbox]);
 
   const activePlatos = platos.filter((p) => p.categoria === active);
   const image = categoryImages[active];
