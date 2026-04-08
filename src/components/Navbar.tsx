@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
 import { useWhatsappNumber } from "@/hooks/use-whatsapp-number";
+import { useCart } from "@/contexts/CartContext";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLang();
   const waNumber = useWhatsappNumber();
+  const { takeawayActivo, totalItems, setDrawerOpen } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
