@@ -23,6 +23,9 @@ import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import Baja from "./pages/Baja.tsx";
 import MpCallback from "./pages/MpCallback.tsx";
 import Checkout from "./pages/Checkout.tsx";
+import PedidoConfirmado from "./pages/PedidoConfirmado.tsx";
+import PedidoFallido from "./pages/PedidoFallido.tsx";
+import PedidoPendiente from "./pages/PedidoPendiente.tsx";
 
 const queryClient = new QueryClient();
 
