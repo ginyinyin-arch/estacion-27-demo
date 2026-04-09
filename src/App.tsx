@@ -22,6 +22,7 @@ import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import Baja from "./pages/Baja.tsx";
 import MpCallback from "./pages/MpCallback.tsx";
+import Checkout from "./pages/Checkout.tsx";
 
 const queryClient = new QueryClient();
 
