@@ -192,13 +192,23 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
   const [precio, setPrecio] = useState(plato?.precio?.toString() || "");
   const [imagenFile, setImagenFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(plato?.imagen_url || null);
+  const [imageRemoved, setImageRemoved] = useState(false);
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const handleRemoveImage = () => {
+    setPreviewUrl(null);
+    setImagenFile(null);
+    setImageRemoved(true);
+    setConfirmingRemove(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    let imagen_url = plato?.imagen_url || null;
+    let imagen_url = imageRemoved ? null : (plato?.imagen_url || null);
+
     if (imagenFile) {
       const ext = imagenFile.name.split(".").pop();
       const path = `platos/${Date.now()}.${ext}`;
@@ -209,12 +219,21 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
       }
     }
 
+    // Delete old file from storage if image was removed or replaced
+    if ((imageRemoved || imagenFile) && plato?.imagen_url) {
+      try {
+        const url = new URL(plato.imagen_url);
+        const match = url.pathname.match(/\/object\/public\/imagenes\/(.+)$/);
+        if (match) {
+          await supabase.storage.from("imagenes").remove([match[1]]);
+        }
+      } catch { /* ignore parse errors */ }
+    }
+
     if (plato) {
       const newPrecio = Number(precio);
       await supabase.from("platos").update({ nombre, descripcion: descripcion || null, precio: newPrecio, imagen_url }).eq("id", plato.id);
-      // Trigger auto-translate
       supabase.functions.invoke("auto-translate", { body: { table: "platos", id: plato.id, fields: { descripcion: descripcion || null } } });
-      // Notify price drop subscribers if price decreased
       if (newPrecio < plato.precio) {
         supabase.functions.invoke("notify-price-drop", { body: { plato_id: plato.id, precio_anterior: plato.precio, precio_nuevo: newPrecio } });
       }
@@ -242,12 +261,25 @@ function PlatoForm({ plato, categoria, maxOrden, onClose, onSaved }: {
         <div>
           <label className="block text-xs text-[#888] mb-1">Imagen</label>
           {previewUrl && (
-            <img src={previewUrl} alt="Preview" className="w-12 h-12 rounded object-cover mb-2 border border-[#333]" />
+            <div className="mb-2">
+              <img src={previewUrl} alt="Preview" className="w-12 h-12 rounded object-cover border border-[#333]" />
+              {!confirmingRemove ? (
+                <button type="button" onClick={() => setConfirmingRemove(true)} className="block mt-1 text-xs text-red-400 hover:text-red-300 cursor-pointer">
+                  ✕ Eliminar imagen
+                </button>
+              ) : (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-[#ccc]">¿Eliminar imagen?</span>
+                  <button type="button" onClick={handleRemoveImage} className="text-xs text-red-400 hover:text-red-300 font-medium">Sí, eliminar</button>
+                  <button type="button" onClick={() => setConfirmingRemove(false)} className="text-xs text-[#888] hover:text-[#ccc]">Cancelar</button>
+                </div>
+              )}
+            </div>
           )}
           <input type="file" accept="image/*" onChange={(e) => {
             const file = e.target.files?.[0] || null;
             setImagenFile(file);
-            if (file) setPreviewUrl(URL.createObjectURL(file));
+            if (file) { setPreviewUrl(URL.createObjectURL(file)); setImageRemoved(false); }
           }} className="text-xs text-[#888]" />
         </div>
         <div className="flex gap-2 pt-2">
