@@ -38,6 +38,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/baja" element={<Baja />} />
             <Route path="/mp-callback" element={<MpCallback />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin/carta" element={<AdminCarta />} />
