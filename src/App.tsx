@@ -23,6 +23,9 @@ import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import Baja from "./pages/Baja.tsx";
 import MpCallback from "./pages/MpCallback.tsx";
 import Checkout from "./pages/Checkout.tsx";
+import PedidoConfirmado from "./pages/PedidoConfirmado.tsx";
+import PedidoFallido from "./pages/PedidoFallido.tsx";
+import PedidoPendiente from "./pages/PedidoPendiente.tsx";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,9 @@ const App = () => (
             <Route path="/baja" element={<Baja />} />
             <Route path="/mp-callback" element={<MpCallback />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pedido-confirmado" element={<PedidoConfirmado />} />
+            <Route path="/pedido-fallido" element={<PedidoFallido />} />
+            <Route path="/pedido-pendiente" element={<PedidoPendiente />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin/carta" element={<AdminCarta />} />
