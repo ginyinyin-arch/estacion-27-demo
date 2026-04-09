@@ -21,6 +21,7 @@ import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import Baja from "./pages/Baja.tsx";
+import MpCallback from "./pages/MpCallback.tsx";
 
 const queryClient = new QueryClient();
 
