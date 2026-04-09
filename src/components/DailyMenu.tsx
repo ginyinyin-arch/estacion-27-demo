@@ -15,14 +15,17 @@ const DailyMenu = () => {
   const { lang, t } = useLang();
 
   const fetchMenu = async () => {
-    const hoy = new Date().toISOString().split("T")[0];
+    // Use Argentina timezone for date to match admin publishing
+    const now = new Date();
+    const hoy = now.toLocaleDateString("en-CA", { timeZone: "America/Argentina/Buenos_Aires" });
     const { data } = await supabase.from("menu_del_dia").select("*")
       .eq("fecha", hoy).eq("activo", true).limit(1).maybeSingle();
     if (data) {
       const [h, m] = data.valido_hasta_hora.split(":").map(Number);
-      const now = new Date();
-      const limit = new Date(); limit.setHours(h, m, 0, 0);
-      if (now <= limit) setMenu(data as MenuDia);
+      // Compare using Argentina local time
+      const argNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Argentina/Buenos_Aires" }));
+      const limit = new Date(argNow); limit.setHours(h, m, 0, 0);
+      if (argNow <= limit) setMenu(data as MenuDia);
       else setMenu(null);
     } else setMenu(null);
   };
