@@ -58,18 +58,30 @@ export type Database = {
       configuracion: {
         Row: {
           id: string
+          mp_access_token: string | null
+          mp_connected: boolean
+          mp_refresh_token: string | null
+          mp_user_id: string | null
           takeaway_activo: boolean
           updated_at: string
           whatsapp_numero: string
         }
         Insert: {
           id?: string
+          mp_access_token?: string | null
+          mp_connected?: boolean
+          mp_refresh_token?: string | null
+          mp_user_id?: string | null
           takeaway_activo?: boolean
           updated_at?: string
           whatsapp_numero?: string
         }
         Update: {
           id?: string
+          mp_access_token?: string | null
+          mp_connected?: boolean
+          mp_refresh_token?: string | null
+          mp_user_id?: string | null
           takeaway_activo?: boolean
           updated_at?: string
           whatsapp_numero?: string

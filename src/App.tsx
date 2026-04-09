@@ -21,6 +21,7 @@ import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import Baja from "./pages/Baja.tsx";
+import MpCallback from "./pages/MpCallback.tsx";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/baja" element={<Baja />} />
+            <Route path="/mp-callback" element={<MpCallback />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin/carta" element={<AdminCarta />} />
