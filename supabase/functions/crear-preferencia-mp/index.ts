@@ -91,10 +91,13 @@ serve(async (req) => {
       currency_id: "ARS",
     }));
 
+    const marketplace_fee = Math.round(total * 0.012);
+
     const prefBody: any = {
       items: mpItems,
       external_reference: pedido_id,
       auto_return: "approved",
+      marketplace_fee,
       back_urls: {
         success: `${SITE_URL}/pedido-confirmado`,
         failure: `${SITE_URL}/pedido-fallido`,
