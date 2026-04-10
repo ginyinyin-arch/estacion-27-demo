@@ -92,7 +92,7 @@ serve(async (req) => {
       currency_id: "ARS",
     }));
 
-    const marketplace_fee = Math.round(total * 0.012);
+    const marketplace_fee = Math.round(total * 0.0153);
 
     const prefBody: any = {
       items: mpItems,
