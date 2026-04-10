@@ -19,8 +19,14 @@ const baseNavItems = [
 const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [takeawayActivo, setTakeawayActivo] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+
+  const navItems = [
+    ...baseNavItems,
+    ...(takeawayActivo ? [{ to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag }] : []),
+  ];
 
   useEffect(() => {
     const check = async () => {
