@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X, ShoppingBag } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const navItems = [
+const baseNavItems = [
   { to: "/admin/carta", label: "Carta", icon: UtensilsCrossed },
   { to: "/admin/menu-del-dia", label: "Menú del Día", icon: BookOpen },
   { to: "/admin/promociones", label: "Promociones", icon: Tag },
