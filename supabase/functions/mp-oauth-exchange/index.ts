@@ -41,7 +41,7 @@ serve(async (req) => {
         client_id: MP_APP_ID,
         client_secret: MP_CLIENT_SECRET,
         code,
-        redirect_uri: `${SITE_URL}/mp-callback`,
+        redirect_uri: `${SITE_URL.replace(/\/+$/, "")}/mp-callback`,
       }),
     });
 
