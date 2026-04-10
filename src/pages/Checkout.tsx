@@ -7,7 +7,7 @@ import SmartPhoneInput from "@/components/SmartPhoneInput";
 import { useToast } from "@/hooks/use-toast";
 
 const Checkout = () => {
-  const { items, total, takeawayActivo, clearCart } = useCart();
+  const { items, total, takeawayActivo, takeawayLoading, clearCart } = useCart();
   const { lang } = useLang();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -18,12 +18,21 @@ const Checkout = () => {
   const [notas, setNotas] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Redirect if takeaway is off or cart is empty
+  // Redirect if takeaway is off or cart is empty (only after loading completes)
   useEffect(() => {
+    if (takeawayLoading) return;
     if (!takeawayActivo || items.length === 0) {
       navigate("/", { replace: true });
     }
-  }, [takeawayActivo, items.length, navigate]);
+  }, [takeawayActivo, takeawayLoading, items.length, navigate]);
+
+  if (takeawayLoading) {
+    return (
+      <div className="min-h-screen bg-negro flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-ambar border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!takeawayActivo || items.length === 0) return null;
 

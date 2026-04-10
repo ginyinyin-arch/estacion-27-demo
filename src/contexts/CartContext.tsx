@@ -11,6 +11,7 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   takeawayActivo: boolean;
+  takeawayLoading: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
   addItem: (plato_id: string, nombre: string, precio: number) => void;
@@ -32,6 +33,7 @@ export const useCart = () => {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [takeawayActivo, setTakeawayActivo] = useState(false);
+  const [takeawayLoading, setTakeawayLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -44,7 +46,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (data && typeof (data as any).takeaway_activo === "boolean") {
           setTakeawayActivo((data as any).takeaway_activo);
         }
-      });
+      })
+      .finally(() => setTakeawayLoading(false));
   }, []);
 
   const addItem = (plato_id: string, nombre: string, precio: number) => {
@@ -68,7 +71,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalItems = items.reduce((s, i) => s + i.cantidad, 0);
 
   return (
-    <CartContext.Provider value={{ items, takeawayActivo, drawerOpen, setDrawerOpen, addItem, removeItem, updateQuantity, total, totalItems, clearCart }}>
+    <CartContext.Provider value={{ items, takeawayActivo, takeawayLoading, drawerOpen, setDrawerOpen, addItem, removeItem, updateQuantity, total, totalItems, clearCart }}>
       {children}
     </CartContext.Provider>
   );
