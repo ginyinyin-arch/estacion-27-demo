@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X, ShoppingBag } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const navItems = [
+const baseNavItems = [
   { to: "/admin/carta", label: "Carta", icon: UtensilsCrossed },
   { to: "/admin/menu-del-dia", label: "Menú del Día", icon: BookOpen },
   { to: "/admin/promociones", label: "Promociones", icon: Tag },
@@ -19,8 +19,14 @@ const navItems = [
 const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [takeawayActivo, setTakeawayActivo] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+
+  const navItems = [
+    ...baseNavItems,
+    ...(takeawayActivo ? [{ to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag }] : []),
+  ];
 
   useEffect(() => {
     const check = async () => {
@@ -30,6 +36,9 @@ const AdminLayout = () => {
         return;
       }
       setLoading(false);
+      // Fetch takeaway status
+      const { data: config } = await supabase.from("configuracion").select("takeaway_activo").limit(1).single();
+      if (config) setTakeawayActivo(config.takeaway_activo);
     };
     check();
 
