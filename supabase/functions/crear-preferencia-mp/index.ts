@@ -82,6 +82,7 @@ serve(async (req) => {
 
     const pedido_id = pedido.id;
     const SITE_URL = Deno.env.get("SITE_URL") || "";
+    const baseUrl = SITE_URL.replace(/\/$/, '');
 
     // Build preference items
     const mpItems = items.map((item: any) => ({
@@ -99,9 +100,9 @@ serve(async (req) => {
       auto_return: "approved",
       marketplace_fee,
       back_urls: {
-        success: `${SITE_URL}/pedido-confirmado`,
-        failure: `${SITE_URL}/pedido-fallido`,
-        pending: `${SITE_URL}/pedido-pendiente`,
+        success: `${baseUrl}/pedido-confirmado`,
+        failure: `${baseUrl}/pedido-fallido`,
+        pending: `${baseUrl}/pedido-pendiente`,
       },
     };
 
