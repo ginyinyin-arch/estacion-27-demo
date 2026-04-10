@@ -49,7 +49,6 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      // 1. Insert pedido
       const pedidoItems = items.map((i) => ({
         plato_id: i.plato_id,
         nombre: i.nombre,
@@ -57,34 +56,24 @@ const Checkout = () => {
         cantidad: i.cantidad,
       }));
 
-      const { data: pedido, error: insertErr } = await supabase
-        .from("pedidos")
-        .insert({
-          items: pedidoItems as any,
-          total,
-          nombre_cliente: nombre.trim(),
-          email: email.trim() || null,
-          telefono: telefono.trim() || null,
-          notas: notas.trim() || null,
-        })
-        .select("id")
-        .single();
-
-      if (insertErr || !pedido) {
-        throw new Error(insertErr?.message || "Error al crear pedido");
-      }
-
-      // 2. Create MP preference
       const { data: mpData, error: mpErr } = await supabase.functions.invoke(
         "crear-preferencia-mp",
-        { body: { pedido_id: pedido.id } }
+        {
+          body: {
+            items: pedidoItems,
+            nombre: nombre.trim(),
+            email: email.trim() || null,
+            telefono: telefono.trim() || null,
+            notas: notas.trim() || null,
+          },
+        }
       );
 
       if (mpErr || !mpData?.init_point) {
         throw new Error(mpData?.error || mpErr?.message || "Error al conectar con MercadoPago");
       }
 
-      // 3. Redirect to MercadoPago
+      // Redirect to MercadoPago
       clearCart();
       window.location.href = mpData.init_point;
     } catch (err: any) {
