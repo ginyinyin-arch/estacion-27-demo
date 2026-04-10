@@ -30,11 +30,25 @@ export const useCart = () => {
   return ctx;
 };
 
+const CART_KEY = "cart_items";
+
+const loadCart = (): CartItem[] => {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(loadCart);
   const [takeawayActivo, setTakeawayActivo] = useState(false);
   const [takeawayLoading, setTakeawayLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Persist cart to localStorage
+  useEffect(() => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+  }, [items]);
 
   useEffect(() => {
     supabase
