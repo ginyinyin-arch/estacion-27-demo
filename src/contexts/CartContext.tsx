@@ -46,8 +46,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (data && typeof (data as any).takeaway_activo === "boolean") {
           setTakeawayActivo((data as any).takeaway_activo);
         }
-      })
-      .finally(() => setTakeawayLoading(false));
+        setTakeawayLoading(false);
+      }, () => {
+        setTakeawayLoading(false);
+      });
   }, []);
 
   const addItem = (plato_id: string, nombre: string, precio: number) => {
