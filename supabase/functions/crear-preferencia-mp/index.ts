@@ -13,10 +13,18 @@ serve(async (req) => {
   }
 
   try {
-    const { pedido_id } = await req.json();
-    if (!pedido_id || typeof pedido_id !== "string") {
+    const body = await req.json();
+    const { items, nombre, email, telefono, notas } = body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return new Response(
-        JSON.stringify({ error: "Missing pedido_id" }),
+        JSON.stringify({ error: "Missing or empty items" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (!nombre || typeof nombre !== "string" || !nombre.trim()) {
+      return new Response(
+        JSON.stringify({ error: "Missing nombre" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -47,24 +55,36 @@ serve(async (req) => {
       );
     }
 
-    // Read the order
+    // Calculate total
+    const total = items.reduce((sum: number, i: any) => sum + Number(i.precio) * Number(i.cantidad), 0);
+
+    // Insert pedido (service_role bypasses RLS)
     const { data: pedido, error: pedErr } = await supabase
       .from("pedidos")
-      .select("*")
-      .eq("id", pedido_id)
+      .insert({
+        items,
+        total,
+        nombre_cliente: nombre.trim(),
+        email: email?.trim() || null,
+        telefono: telefono?.trim() || null,
+        notas: notas?.trim() || null,
+      })
+      .select("id")
       .single();
 
     if (pedErr || !pedido) {
+      console.error("Insert pedido failed:", pedErr);
       return new Response(
-        JSON.stringify({ error: "Pedido no encontrado" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Error al crear pedido" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    const pedido_id = pedido.id;
     const SITE_URL = Deno.env.get("SITE_URL") || "";
 
     // Build preference items
-    const items = (pedido.items as any[]).map((item: any) => ({
+    const mpItems = items.map((item: any) => ({
       title: item.nombre,
       quantity: item.cantidad,
       unit_price: Number(item.precio),
@@ -72,7 +92,7 @@ serve(async (req) => {
     }));
 
     const prefBody: any = {
-      items,
+      items: mpItems,
       external_reference: pedido_id,
       auto_return: "approved",
       back_urls: {
@@ -83,12 +103,10 @@ serve(async (req) => {
     };
 
     // Add payer info if available
-    if (pedido.email || pedido.nombre_cliente) {
+    if (email?.trim() || nombre.trim()) {
       prefBody.payer = {};
-      if (pedido.email) prefBody.payer.email = pedido.email;
-      if (pedido.nombre_cliente) {
-        prefBody.payer.name = pedido.nombre_cliente;
-      }
+      if (email?.trim()) prefBody.payer.email = email.trim();
+      if (nombre.trim()) prefBody.payer.name = nombre.trim();
     }
 
     // Create preference in MercadoPago
