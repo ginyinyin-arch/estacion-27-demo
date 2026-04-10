@@ -21,7 +21,7 @@ serve(async (req) => {
     );
   }
 
-  const redirectUri = `${SITE_URL}/mp-callback`;
+  const redirectUri = `${SITE_URL.replace(/\/+$/, "")}/mp-callback`;
   const url = `https://auth.mercadopago.com/authorization?client_id=${MP_APP_ID}&response_type=code&platform_id=mp&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
   return new Response(
