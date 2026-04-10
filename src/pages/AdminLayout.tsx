@@ -36,6 +36,9 @@ const AdminLayout = () => {
         return;
       }
       setLoading(false);
+      // Fetch takeaway status
+      const { data: config } = await supabase.from("configuracion").select("takeaway_activo").limit(1).single();
+      if (config) setTakeawayActivo(config.takeaway_activo);
     };
     check();
 
