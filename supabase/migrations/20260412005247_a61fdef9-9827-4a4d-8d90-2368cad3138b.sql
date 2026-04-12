@@ -1,0 +1,1 @@
+ALTER TABLE public.pedidos ADD COLUMN reembolso_id text DEFAULT NULL;
