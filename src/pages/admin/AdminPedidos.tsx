@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, X, Check } from "lucide-react";
 import type { Json } from "@/integrations/supabase/types";
+import NuevoPedidoModal, { type PedidoNuevo } from "@/components/admin/NuevoPedidoModal";
 
 interface PedidoItem {
   id: string;
@@ -21,6 +22,8 @@ interface Pedido {
   items: Json;
   total: number;
   estado: string;
+  metodo_pago: string;
+  programado_para: string | null;
   mp_payment_id: string | null;
 }
 
@@ -95,6 +98,7 @@ const AdminPedidos = () => {
   const [filtro, setFiltro] = useState<string>("todos");
   const [detalle, setDetalle] = useState<Pedido | null>(null);
   const [loading, setLoading] = useState(true);
+  const [alertQueue, setAlertQueue] = useState<PedidoNuevo[]>([]);
 
   const fetchPedidos = async () => {
     const { data, error } = await supabase
@@ -105,23 +109,50 @@ const AdminPedidos = () => {
     setLoading(false);
   };
 
+  const handleInsert = useCallback((payload: any) => {
+    const row = payload.new;
+    if (row && (row.estado === "pagado" || row.estado === "pendiente_efectivo")) {
+      setAlertQueue(prev => {
+        if (prev.some(p => p.id === row.id)) return prev;
+        return [...prev, {
+          id: row.id,
+          nombre_cliente: row.nombre_cliente,
+          items: row.items,
+          total: row.total,
+          metodo_pago: row.metodo_pago || "mercadopago",
+          programado_para: row.programado_para,
+          telefono: row.telefono,
+          notas: row.notas,
+        }];
+      });
+    }
+  }, []);
+
   useEffect(() => {
     fetchPedidos();
     const channel = supabase
       .channel("admin-pedidos")
-      .on("postgres_changes", { event: "*", schema: "public", table: "pedidos" }, () => {
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "pedidos" }, (payload) => {
+        handleInsert(payload);
+        fetchPedidos();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pedidos" }, () => {
         fetchPedidos();
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [handleInsert]);
 
-  const marcarListo = async (id: string) => {
-    const { error } = await supabase.from("pedidos").update({ estado: "listo" }).eq("id", id);
+  const handleAlertAction = (id: string) => {
+    setAlertQueue(prev => prev.filter(p => p.id !== id));
+  };
+
+  const updateEstado = async (id: string, estado: string) => {
+    const { error } = await supabase.from("pedidos").update({ estado }).eq("id", id);
     if (error) {
       toast({ title: "Error al actualizar", variant: "destructive" });
     } else {
-      toast({ title: "Pedido marcado como listo" });
+      toast({ title: `Pedido ${estado === "listo" ? "marcado como listo" : estado === "en_preparacion" ? "aceptado" : "rechazado"}` });
     }
   };
 
@@ -166,15 +197,31 @@ const AdminPedidos = () => {
                 <p className="text-sm text-[#f0e8d0] font-medium mt-1">{p.nombre_cliente}</p>
                 <p className="text-xs text-[#888] truncate">{resumenItems(p.items)}</p>
               </div>
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap">
                 <span className="text-sm font-semibold text-[#f0e8d0]">${p.total.toLocaleString("es-AR")}</span>
                 {p.estado === "pagado" && (
                   <button
-                    onClick={() => marcarListo(p.id)}
+                    onClick={() => updateEstado(p.id, "listo")}
                     className="flex items-center gap-1 px-3 py-1.5 rounded bg-green-600 hover:bg-green-700 text-white text-xs font-medium transition-colors"
                   >
                     <Check size={14} /> Listo
                   </button>
+                )}
+                {p.estado === "en_espera" && (
+                  <>
+                    <button
+                      onClick={() => updateEstado(p.id, "en_preparacion")}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-green-600 hover:bg-green-700 text-white text-xs font-medium transition-colors"
+                    >
+                      <Check size={14} /> Confirmar
+                    </button>
+                    <button
+                      onClick={() => updateEstado(p.id, "rechazado")}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded bg-red-600 hover:bg-red-700 text-white text-xs font-medium transition-colors"
+                    >
+                      <X size={14} /> Rechazar
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => setDetalle(p)}
@@ -247,6 +294,9 @@ const AdminPedidos = () => {
           </div>
         </div>
       )}
+
+      {/* Alert modal for new orders */}
+      <NuevoPedidoModal queue={alertQueue} onAction={handleAlertAction} />
     </div>
   );
 };
