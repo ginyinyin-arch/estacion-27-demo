@@ -254,39 +254,48 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          espera_desde: string | null
           estado: string
           id: string
           items: Json
+          metodo_pago: string
           mp_payment_id: string | null
           mp_preference_id: string | null
           nombre_cliente: string
           notas: string | null
+          programado_para: string | null
           telefono: string | null
           total: number
         }
         Insert: {
           created_at?: string
           email?: string | null
+          espera_desde?: string | null
           estado?: string
           id?: string
           items: Json
+          metodo_pago?: string
           mp_payment_id?: string | null
           mp_preference_id?: string | null
           nombre_cliente: string
           notas?: string | null
+          programado_para?: string | null
           telefono?: string | null
           total: number
         }
         Update: {
           created_at?: string
           email?: string | null
+          espera_desde?: string | null
           estado?: string
           id?: string
           items?: Json
+          metodo_pago?: string
           mp_payment_id?: string | null
           mp_preference_id?: string | null
           nombre_cliente?: string
           notas?: string | null
+          programado_para?: string | null
           telefono?: string | null
           total?: number
         }
