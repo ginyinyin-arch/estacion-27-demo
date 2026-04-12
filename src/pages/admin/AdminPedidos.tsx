@@ -24,16 +24,23 @@ interface Pedido {
   mp_payment_id: string | null;
 }
 
-const ESTADOS = ["todos", "pendiente", "pagado", "listo", "cancelado"] as const;
+const ESTADOS = ["todos", "pendiente", "pendiente_efectivo", "pagado", "en_espera", "en_preparacion", "listo", "cancelado", "rechazado"] as const;
 
 const estadoBadge = (estado: string) => {
   switch (estado) {
     case "pagado":
       return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+    case "en_espera":
+      return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+    case "en_preparacion":
+      return "bg-indigo-500/20 text-indigo-400 border-indigo-500/30";
     case "listo":
       return "bg-green-500/20 text-green-400 border-green-500/30";
     case "cancelado":
+    case "rechazado":
       return "bg-red-500/20 text-red-400 border-red-500/30";
+    case "pendiente_efectivo":
+      return "bg-gray-500/20 text-gray-400 border-gray-500/30";
     case "pendiente":
     default:
       return "bg-[#C8860A]/20 text-[#C8860A] border-[#C8860A]/30";
@@ -43,8 +50,12 @@ const estadoBadge = (estado: string) => {
 const estadoLabel = (estado: string) => {
   switch (estado) {
     case "pagado": return "Pagado";
+    case "en_espera": return "En espera";
+    case "en_preparacion": return "En preparación";
     case "listo": return "Listo ✓";
     case "cancelado": return "Cancelado";
+    case "rechazado": return "Rechazado";
+    case "pendiente_efectivo": return "💵 Pendiente efectivo";
     case "pendiente": return "Pendiente";
     default: return estado;
   }
