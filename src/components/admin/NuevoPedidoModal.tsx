@@ -107,12 +107,15 @@ const NuevoPedidoModal = ({ queue, onAction }: Props) => {
   const act = async (action: "aceptar" | "esperar" | "rechazar") => {
     if (!current) return;
     setActing(true);
-    let update: Record<string, any> = {};
-    if (action === "aceptar") update = { estado: "en_preparacion" };
-    else if (action === "esperar") update = { estado: "en_espera", espera_desde: new Date().toISOString() };
-    else update = { estado: "rechazado" };
-
-    const { error } = await supabase.from("pedidos").update(update).eq("id", current.id);
+    const id = current.id;
+    let error: any = null;
+    if (action === "aceptar") {
+      ({ error } = await supabase.from("pedidos").update({ estado: "en_preparacion" }).eq("id", id));
+    } else if (action === "esperar") {
+      ({ error } = await supabase.from("pedidos").update({ estado: "en_espera", espera_desde: new Date().toISOString() }).eq("id", id));
+    } else {
+      ({ error } = await supabase.from("pedidos").update({ estado: "rechazado" }).eq("id", id));
+    }
     if (error) {
       toast({ title: "Error al actualizar pedido", variant: "destructive" });
     }
