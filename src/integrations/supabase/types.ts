@@ -264,6 +264,7 @@ export type Database = {
           nombre_cliente: string
           notas: string | null
           programado_para: string | null
+          reembolso_id: string | null
           telefono: string | null
           total: number
         }
@@ -280,6 +281,7 @@ export type Database = {
           nombre_cliente: string
           notas?: string | null
           programado_para?: string | null
+          reembolso_id?: string | null
           telefono?: string | null
           total: number
         }
@@ -296,6 +298,7 @@ export type Database = {
           nombre_cliente?: string
           notas?: string | null
           programado_para?: string | null
+          reembolso_id?: string | null
           telefono?: string | null
           total?: number
         }
