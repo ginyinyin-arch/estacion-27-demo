@@ -27,6 +27,7 @@ import Checkout from "./pages/Checkout.tsx";
 import PedidoConfirmado from "./pages/PedidoConfirmado.tsx";
 import PedidoFallido from "./pages/PedidoFallido.tsx";
 import PedidoPendiente from "./pages/PedidoPendiente.tsx";
+import Seguimiento from "./pages/Seguimiento.tsx";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/pedido-confirmado" element={<PedidoConfirmado />} />
             <Route path="/pedido-fallido" element={<PedidoFallido />} />
             <Route path="/pedido-pendiente" element={<PedidoPendiente />} />
+            <Route path="/seguimiento/:pedidoId" element={<Seguimiento />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin/carta" element={<AdminCarta />} />
