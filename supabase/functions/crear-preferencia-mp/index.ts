@@ -100,7 +100,7 @@ serve(async (req) => {
       auto_return: "approved",
       marketplace_fee,
       back_urls: {
-        success: `${baseUrl}/pedido-confirmado`,
+        success: `${baseUrl}/seguimiento/${pedido_id}`,
         failure: `${baseUrl}/pedido-fallido`,
         pending: `${baseUrl}/pedido-pendiente`,
       },
