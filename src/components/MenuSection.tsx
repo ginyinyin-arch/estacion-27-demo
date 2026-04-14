@@ -228,7 +228,7 @@ const MenuSection = () => {
                       </div>
                     </div>
                     {d.precio > 0 && (
-                      <div className="text-right whitespace-nowrap">
+                      <div className="text-right whitespace-nowrap flex flex-col items-end gap-1">
                         {promoActiva ? (
                           <>
                             <span className="font-body text-[0.78rem] text-gris line-through block">${d.precio.toLocaleString()}</span>
@@ -245,32 +245,32 @@ const MenuSection = () => {
                         {d.disponible && !agotado && (
                           <button
                             onClick={(e) => { e.stopPropagation(); setAlertPlatoId(d.id); }}
-                            className="flex items-center gap-1 mt-1 font-body text-[0.68rem] text-crema2 hover:text-ambar transition-colors"
+                            className="flex items-center gap-1 font-body text-[0.68rem] text-crema2 hover:text-ambar transition-colors"
                           >
                             <Bell size={10} />
                             {t("alert.btn")}
                           </button>
                         )}
+                        {takeawayActivo && d.disponible && !agotado && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const finalPrice = promoActiva
+                                ? (promo.tipo_descuento === "porcentaje"
+                                  ? Math.round(d.precio * (1 - promo.valor_descuento / 100))
+                                  : Math.max(0, d.precio - promo.valor_descuento))
+                                : d.precio;
+                              addItem(d.id, getName(d), finalPrice);
+                            }}
+                            className="flex items-center gap-1 font-body font-semibold text-[0.7rem] text-ambar hover:text-negro hover:bg-ambar border border-ambar rounded px-2 py-1 transition-colors"
+                          >
+                            <Plus size={12} />
+                            Agregar
+                          </button>
+                        )}
                       </div>
                     )}
                     </div>
-                    {takeawayActivo && d.disponible && !agotado && d.precio > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const finalPrice = promoActiva
-                            ? (promo.tipo_descuento === "porcentaje"
-                              ? Math.round(d.precio * (1 - promo.valor_descuento / 100))
-                              : Math.max(0, d.precio - promo.valor_descuento))
-                            : d.precio;
-                          addItem(d.id, getName(d), finalPrice);
-                        }}
-                        className="absolute bottom-3 right-3 flex items-center gap-1 font-body font-semibold text-[0.7rem] text-ambar hover:text-negro hover:bg-ambar border border-ambar rounded px-2 py-1 transition-colors"
-                      >
-                        <Plus size={12} />
-                        Agregar
-                      </button>
-                    )}
                   </div>
                   );
                 })}
