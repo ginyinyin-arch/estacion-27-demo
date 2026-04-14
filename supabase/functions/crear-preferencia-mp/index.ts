@@ -68,6 +68,7 @@ serve(async (req) => {
         email: email?.trim() || null,
         telefono: telefono?.trim() || null,
         notas: notas?.trim() || null,
+        programado_para: programado_para || null,
       })
       .select("id")
       .single();
