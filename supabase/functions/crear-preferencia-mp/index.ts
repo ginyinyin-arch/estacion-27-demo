@@ -14,7 +14,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { items, nombre, email, telefono, notas } = body;
+    const { items, nombre, email, telefono, notas, programado_para } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return new Response(
@@ -68,6 +68,7 @@ serve(async (req) => {
         email: email?.trim() || null,
         telefono: telefono?.trim() || null,
         notas: notas?.trim() || null,
+        programado_para: programado_para || null,
       })
       .select("id")
       .single();
