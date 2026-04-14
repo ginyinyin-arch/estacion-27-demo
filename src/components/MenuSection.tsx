@@ -270,6 +270,7 @@ const MenuSection = () => {
                         )}
                       </div>
                     )}
+                    </div>
                   </div>
                   );
                 })}
