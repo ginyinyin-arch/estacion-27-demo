@@ -4,6 +4,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLang } from "@/contexts/LangContext";
 import { supabase } from "@/integrations/supabase/client";
 import SmartPhoneInput from "@/components/SmartPhoneInput";
+import ScheduleSelector from "@/components/checkout/ScheduleSelector";
 import { useToast } from "@/hooks/use-toast";
 
 const Checkout = () => {
@@ -17,8 +18,26 @@ const Checkout = () => {
   const [telefono, setTelefono] = useState("");
   const [notas, setNotas] = useState("");
   const [loading, setLoading] = useState(false);
+  const [programadoPara, setProgramadoPara] = useState<string | null>(null);
+  const [hasPromos, setHasPromos] = useState(false);
+  const [promosLoading, setPromosLoading] = useState(true);
 
-  // Redirect if takeaway is off or cart is empty (only after loading completes)
+  // Check if cart has active promos
+  useEffect(() => {
+    if (items.length === 0) { setPromosLoading(false); return; }
+    const platoIds = items.map((i) => i.plato_id);
+    supabase
+      .from("promociones")
+      .select("id", { count: "exact", head: true })
+      .in("plato_id", platoIds)
+      .eq("activa", true)
+      .then(({ count }) => {
+        setHasPromos((count ?? 0) > 0);
+        setPromosLoading(false);
+      });
+  }, [items]);
+
+  // Redirect if takeaway is off or cart is empty
   useEffect(() => {
     if (takeawayLoading) return;
     if (!takeawayActivo || items.length === 0) {
@@ -26,7 +45,7 @@ const Checkout = () => {
     }
   }, [takeawayActivo, takeawayLoading, items.length, navigate]);
 
-  if (takeawayLoading) {
+  if (takeawayLoading || promosLoading) {
     return (
       <div className="min-h-screen bg-negro flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-ambar border-t-transparent rounded-full animate-spin" />
@@ -65,6 +84,7 @@ const Checkout = () => {
             email: email.trim() || null,
             telefono: telefono.trim() || null,
             notas: notas.trim() || null,
+            programado_para: programadoPara,
           },
         }
       );
@@ -73,7 +93,6 @@ const Checkout = () => {
         throw new Error(mpData?.error || mpErr?.message || "Error al conectar con MercadoPago");
       }
 
-      // Redirect to MercadoPago
       clearCart();
       window.location.href = mpData.init_point;
     } catch (err: any) {
@@ -93,7 +112,6 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-negro text-crema">
       <div className="max-w-lg mx-auto px-4 py-10">
-        {/* Header */}
         <button
           onClick={() => navigate(-1)}
           className="text-ambar font-body text-sm mb-6 hover:opacity-75 transition-opacity"
@@ -183,6 +201,9 @@ const Checkout = () => {
             />
           </div>
         </div>
+
+        {/* Schedule selector */}
+        <ScheduleSelector hasPromos={hasPromos} onScheduleChange={setProgramadoPara} />
 
         {/* Pay button */}
         <button

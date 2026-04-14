@@ -14,7 +14,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { items, nombre, email, telefono, notas } = body;
+    const { items, nombre, email, telefono, notas, programado_para } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return new Response(
