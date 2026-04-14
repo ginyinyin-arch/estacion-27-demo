@@ -5,6 +5,7 @@ import { useLang } from "@/contexts/LangContext";
 import { supabase } from "@/integrations/supabase/client";
 import SmartPhoneInput from "@/components/SmartPhoneInput";
 import ScheduleSelector from "@/components/checkout/ScheduleSelector";
+import PaymentMethodSelector from "@/components/checkout/PaymentMethodSelector";
 import { useToast } from "@/hooks/use-toast";
 
 const Checkout = () => {
@@ -21,6 +22,7 @@ const Checkout = () => {
   const [programadoPara, setProgramadoPara] = useState<string | null>(null);
   const [hasPromos, setHasPromos] = useState(false);
   const [promosLoading, setPromosLoading] = useState(true);
+  const [metodoPago, setMetodoPago] = useState<"mercadopago" | "efectivo">("mercadopago");
 
   // Check if cart has active promos
   useEffect(() => {
@@ -65,6 +67,20 @@ const Checkout = () => {
       return;
     }
 
+    if (metodoPago === "efectivo") {
+      const digits = telefono.replace(/\D/g, "");
+      if (digits.length < 8) {
+        toast({
+          title: lang === "en" ? "Phone required" : "Teléfono requerido",
+          description: lang === "en"
+            ? "Please enter a valid phone number (min. 8 digits)"
+            : "Por favor ingresá un teléfono válido (mín. 8 dígitos)",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -75,26 +91,49 @@ const Checkout = () => {
         cantidad: i.cantidad,
       }));
 
-      const { data: mpData, error: mpErr } = await supabase.functions.invoke(
-        "crear-preferencia-mp",
-        {
-          body: {
-            items: pedidoItems,
-            nombre: nombre.trim(),
-            email: email.trim() || null,
-            telefono: telefono.trim() || null,
-            notas: notas.trim() || null,
-            programado_para: programadoPara,
-          },
+      if (metodoPago === "efectivo") {
+        const { data, error } = await supabase.functions.invoke(
+          "crear-pedido-efectivo",
+          {
+            body: {
+              items: pedidoItems,
+              nombre: nombre.trim(),
+              email: email.trim() || null,
+              telefono: telefono.trim(),
+              notas: notas.trim() || null,
+              programado_para: programadoPara,
+            },
+          }
+        );
+
+        if (error || !data?.pedido_id) {
+          throw new Error(data?.error || error?.message || "Error al crear pedido");
         }
-      );
 
-      if (mpErr || !mpData?.init_point) {
-        throw new Error(mpData?.error || mpErr?.message || "Error al conectar con MercadoPago");
+        clearCart();
+        navigate(`/seguimiento/${data.pedido_id}`);
+      } else {
+        const { data: mpData, error: mpErr } = await supabase.functions.invoke(
+          "crear-preferencia-mp",
+          {
+            body: {
+              items: pedidoItems,
+              nombre: nombre.trim(),
+              email: email.trim() || null,
+              telefono: telefono.trim() || null,
+              notas: notas.trim() || null,
+              programado_para: programadoPara,
+            },
+          }
+        );
+
+        if (mpErr || !mpData?.init_point) {
+          throw new Error(mpData?.error || mpErr?.message || "Error al conectar con MercadoPago");
+        }
+
+        clearCart();
+        window.location.href = mpData.init_point;
       }
-
-      clearCart();
-      window.location.href = mpData.init_point;
     } catch (err: any) {
       toast({
         title: lang === "en" ? "Error" : "Error",
@@ -108,6 +147,8 @@ const Checkout = () => {
 
   const inputClass =
     "w-full bg-negro border border-crema/10 text-crema font-body text-sm placeholder:text-gris focus:outline-none focus:border-ambar/50 transition-colors rounded px-3 py-2.5";
+
+  const isEfectivo = metodoPago === "efectivo";
 
   return (
     <div className="min-h-screen bg-negro text-crema">
@@ -147,6 +188,9 @@ const Checkout = () => {
           </div>
         </div>
 
+        {/* Payment method selector */}
+        <PaymentMethodSelector value={metodoPago} onChange={setMetodoPago} />
+
         {/* Form */}
         <div className="space-y-4 mb-8">
           <div>
@@ -179,9 +223,18 @@ const Checkout = () => {
 
           <div>
             <label className="font-body text-sm text-gris block mb-1">
-              {lang === "en" ? "Phone (optional)" : "Teléfono (opcional)"}
+              {isEfectivo
+                ? (lang === "en" ? "Phone *" : "Teléfono/Celular *")
+                : (lang === "en" ? "Phone (optional)" : "Teléfono (opcional)")}
             </label>
             <SmartPhoneInput onChange={setTelefono} />
+            {isEfectivo && (
+              <p className="text-gris text-xs font-body mt-1">
+                {lang === "en"
+                  ? "We need it to coordinate the pickup"
+                  : "Lo necesitamos para coordinar la entrega"}
+              </p>
+            )}
           </div>
 
           <div>
@@ -215,6 +268,10 @@ const Checkout = () => {
             ? lang === "en"
               ? "Processing..."
               : "Procesando..."
+            : isEfectivo
+            ? lang === "en"
+              ? "Confirm order →"
+              : "Confirmar pedido →"
             : lang === "en"
             ? "Pay with MercadoPago →"
             : "Pagar con MercadoPago →"}
