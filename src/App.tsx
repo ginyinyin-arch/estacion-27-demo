@@ -21,6 +21,7 @@ import AdminIntereses from "./pages/admin/AdminIntereses.tsx";
 import AdminReservas from "./pages/admin/AdminReservas.tsx";
 import AdminConfiguracion from "./pages/admin/AdminConfiguracion.tsx";
 import AdminPedidos from "./pages/admin/AdminPedidos.tsx";
+import AdminInformes from "./pages/admin/AdminInformes.tsx";
 import Baja from "./pages/Baja.tsx";
 import MpCallback from "./pages/MpCallback.tsx";
 import Checkout from "./pages/Checkout.tsx";
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/admin/reservas" element={<AdminReservas />} />
               <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
               <Route path="/admin/pedidos" element={<AdminPedidos />} />
+              <Route path="/admin/informes" element={<AdminInformes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

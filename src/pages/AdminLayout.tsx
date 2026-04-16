@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X, ShoppingBag } from "lucide-react";
+import { UtensilsCrossed, Clock, Image, Store, LogOut, Tag, BookOpen, CalendarDays, Bell, Settings, CalendarCheck, Menu, X, ShoppingBag, BarChart2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const baseNavItems = [
@@ -26,6 +26,7 @@ const AdminLayout = () => {
   const navItems = [
     ...baseNavItems,
     ...(takeawayActivo ? [{ to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag }] : []),
+    { to: "/admin/informes", label: "Informes y Datos", icon: BarChart2 },
   ];
 
   useEffect(() => {
